@@ -50,11 +50,12 @@ jobs:
           MUSIC_URL_AUDIOCOM='https://audio.com/pedroenzo22/audio/sad-piano-and-violin-instrumental-background-music-279068'
 
           if ! yt-dlp --extractor-args 'generic:impersonate' --impersonate chrome \
-            -x --audio-format mp3 --audio-quality 5 \
-            -o 'site/assets/audio/music.%(ext)s' "$MUSIC_URL_PIXABAY"; then
+            -f 'bestaudio/best' \
+            -o 'site/assets/audio/music.mp3' "$MUSIC_URL_PIXABAY"; then
+            rm -f site/assets/audio/music.mp3
             yt-dlp --extractor-args 'generic:impersonate' --impersonate chrome \
-              -x --audio-format mp3 --audio-quality 5 \
-              -o 'site/assets/audio/music.%(ext)s' "$MUSIC_URL_AUDIOCOM"
+              -f 'bestaudio/best' \
+              -o 'site/assets/audio/music.mp3' "$MUSIC_URL_AUDIOCOM"
           fi
 
           test -s site/assets/audio/music.mp3
