@@ -23,14 +23,50 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Build static site
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/assets/images site/assets/audio
+          cp index.html site/index.html
+          touch site/.nojekyll
+
+          curl -L --fail --retry 3 \
+            'https://images.unsplash.com/photo-1770301312392-d03cc3dede90?auto=format&fit=crop&fm=webp&q=82&w=1800' \
+            -o site/assets/images/hero.webp
+          cp site/assets/images/hero.webp site/assets/images/story.webp
+
+          curl -L --fail --retry 3 \
+            'https://images.unsplash.com/photo-1772404245994-200ca40c47fa?auto=format&fit=crop&fm=webp&q=82&w=1800' \
+            -o site/assets/images/ceremony.webp
+
+          curl -L --fail --retry 3 \
+            'https://images.unsplash.com/photo-1757283584283-7b0f22032265?auto=format&fit=crop&fm=webp&q=82&w=1800' \
+            -o site/assets/images/banquet.webp
+
+          python -m pip install --quiet yt-dlp
+          MUSIC_URL_PIXABAY='https://pixabay.com/music/modern-classical-sad-piano-and-violin-instrumental-background-music-279068/'
+          MUSIC_URL_AUDIOCOM='https://audio.com/pedroenzo22/audio/sad-piano-and-violin-instrumental-background-music-279068'
+
+          if ! yt-dlp -x --audio-format mp3 --audio-quality 5 \
+            -o 'site/assets/audio/music.%(ext)s' "$MUSIC_URL_PIXABAY"; then
+            yt-dlp -x --audio-format mp3 --audio-quality 5 \
+              -o 'site/assets/audio/music.%(ext)s' "$MUSIC_URL_AUDIOCOM"
+          fi
+
+          test -s site/assets/audio/music.mp3
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
+
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: site
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
