@@ -30,12 +30,44 @@ jobs:
           set -euo pipefail
           mkdir -p site/assets/images site/assets/audio
           cp index.html site/index.html
+          cp enhancements/v10-1.css site/assets/v10-1.css
+          cp enhancements/v10-1.js site/assets/v10-1.js
           touch site/.nojekyll
+
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('site/index.html')
+          s = p.read_text(encoding='utf-8')
+
+          chapters = s.split('<article class="chapter">')
+          if len(chapters) >= 4:
+              chapters[1] = chapters[1].replace('assets/images/story.webp', 'assets/images/chapter-begin.webp', 1)
+              chapters[2] = chapters[2].replace('assets/images/hero.webp', 'assets/images/chapter-path.webp', 1)
+              chapters[3] = chapters[3].replace('assets/images/ceremony.webp', 'assets/images/chapter-yes.webp', 1)
+              s = '<article class="chapter">'.join(chapters)
+          else:
+              raise SystemExit('No se localizaron los tres capítulos esperados')
+
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-1.css">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-1.js"></script>\n</body>', 1)
+          p.write_text(s, encoding='utf-8')
+          PY
 
           curl -L --fail --retry 3 \
             'https://images.unsplash.com/photo-1770301312392-d03cc3dede90?auto=format&fit=crop&fm=webp&q=82&w=1800' \
             -o site/assets/images/hero.webp
-          cp site/assets/images/hero.webp site/assets/images/story.webp
+
+          curl -L --fail --retry 3 \
+            'https://images.unsplash.com/photo-1776266099831-e84297aa95c5?auto=format&fit=crop&fm=webp&q=80&w=1600' \
+            -o site/assets/images/chapter-begin.webp
+
+          curl -L --fail --retry 3 \
+            'https://images.unsplash.com/photo-1542891433-684dbf58d399?auto=format&fit=crop&fm=webp&q=80&w=1600' \
+            -o site/assets/images/chapter-path.webp
+
+          curl -L --fail --retry 3 \
+            'https://images.unsplash.com/photo-1768777273699-1f8ccd51aaff?auto=format&fit=crop&fm=webp&q=80&w=1600' \
+            -o site/assets/images/chapter-yes.webp
 
           curl -L --fail --retry 3 \
             'https://images.unsplash.com/photo-1772404245994-200ca40c47fa?auto=format&fit=crop&fm=webp&q=82&w=1800' \
@@ -44,6 +76,10 @@ jobs:
           curl -L --fail --retry 3 \
             'https://images.unsplash.com/photo-1757283584283-7b0f22032265?auto=format&fit=crop&fm=webp&q=82&w=1800' \
             -o site/assets/images/banquet.webp
+
+          curl -L --fail --retry 3 \
+            'https://images.unsplash.com/photo-1742780655266-132158926c3c?auto=format&fit=crop&fm=webp&q=78&w=1800' \
+            -o site/assets/images/closing.webp
 
           python -m pip install --quiet 'yt-dlp[default,curl-cffi]'
           MUSIC_URL_PIXABAY='https://pixabay.com/music/modern-classical-sad-piano-and-violin-instrumental-background-music-279068/'
@@ -59,6 +95,10 @@ jobs:
           fi
 
           test -s site/assets/audio/music.mp3
+          test -s site/assets/images/chapter-begin.webp
+          test -s site/assets/images/chapter-path.webp
+          test -s site/assets/images/chapter-yes.webp
+          test -s site/assets/images/closing.webp
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
