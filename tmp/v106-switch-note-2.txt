@@ -1,1 +1,0 @@
-Final switch uses validated staged blobs for workflow and CSS.
