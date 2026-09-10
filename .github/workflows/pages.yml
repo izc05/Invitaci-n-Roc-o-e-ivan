@@ -37,25 +37,22 @@ jobs:
           cp enhancements/v10-6-datafix.js site/assets/v10-6-datafix.js
           touch site/.nojekyll
 
-          # Fotos reales originales: reserva/fallback.
+          # Fotografías reales de Finca Los Olivos, almacenadas de forma estable.
           base64 -d assets/venue/venue-garden-path.avif.b64 > site/assets/venue/venue-garden.avif
           base64 -d assets/venue/venue-ceremony.avif.b64 > site/assets/venue/venue-ceremony.avif
           base64 -d assets/venue/venue-table.avif.b64 > site/assets/venue/venue-table.avif
 
-          # V10.6.2: imágenes mejoradas ya disponibles.
+          # Recursos V10.6.2 se conservan como reserva.
           cp assets/venue-generated/garden.webp site/assets/venue-generated/garden.webp
           cp assets/venue-generated/ceremony.webp site/assets/venue-generated/ceremony.webp
           cp assets/venue-generated/banquet.webp site/assets/venue-generated/banquet.webp
-
-          # V10.6.3: fotografía real vertical del banquete aportada por el usuario.
-          base64 -d assets/venue-generated/banquet-real.webp.b64 > site/assets/venue-generated/banquet-real.webp
 
           python - <<'PY'
           from pathlib import Path
           p = Path('site/index.html')
           s = p.read_text(encoding='utf-8')
-          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=1063">\n</head>', 1)
-          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=1063"></script>\n<script src="assets/v10-6-datafix.js?v=1063"></script>\n</body>', 1)
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=10631">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=10631"></script>\n<script src="assets/v10-6-datafix.js?v=10631"></script>\n</body>', 1)
           p.write_text(s, encoding='utf-8')
           PY
 
@@ -84,10 +81,9 @@ jobs:
           test -s site/assets/v10-6.css
           test -s site/assets/v10-6.js
           test -s site/assets/v10-6-datafix.js
-          test -s site/assets/venue-generated/garden.webp
-          test -s site/assets/venue-generated/ceremony.webp
-          test -s site/assets/venue-generated/banquet.webp
-          test -s site/assets/venue-generated/banquet-real.webp
+          test -s site/assets/venue/venue-garden.avif
+          test -s site/assets/venue/venue-ceremony.avif
+          test -s site/assets/venue/venue-table.avif
           test -s site/assets/audio/music.mp3
           for f in hero story story_start story_path story_cats story_proposal ceremony banquet finale; do test -s "site/assets/images/$f.webp"; done
 
