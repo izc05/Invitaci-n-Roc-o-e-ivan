@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p site/assets/images site/assets/audio site/assets/venue
+          mkdir -p site/assets/images site/assets/audio site/assets/venue site/assets/venue-generated
           cp index.html site/index.html
           cp enhancements/v10-5.css site/assets/v10-5.css
           cp enhancements/v10-5.js site/assets/v10-5.js
@@ -37,21 +37,24 @@ jobs:
           cp enhancements/v10-6-datafix.js site/assets/v10-6-datafix.js
           touch site/.nojekyll
 
-          # Fotos reales seleccionadas por el usuario. Sin CDN externo.
+          # Fotos reales originales (reserva/fallback)
           base64 -d assets/venue/venue-garden-path.avif.b64 > site/assets/venue/venue-garden.avif
           base64 -d assets/venue/venue-ceremony.avif.b64 > site/assets/venue/venue-ceremony.avif
           base64 -d assets/venue/venue-table.avif.b64 > site/assets/venue/venue-table.avif
+
+          # V10.6.2: imágenes mejoradas a partir de las referencias facilitadas por el usuario.
+          unzip -q assets/generated-venue-pack.zip -d site/assets/venue-generated
 
           python - <<'PY'
           from pathlib import Path
           p = Path('site/index.html')
           s = p.read_text(encoding='utf-8')
-          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=1064">\n</head>', 1)
-          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=1064"></script>\n<script src="assets/v10-6-datafix.js?v=1062"></script>\n</body>', 1)
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=1062">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=1062"></script>\n<script src="assets/v10-6-datafix.js?v=1062"></script>\n</body>', 1)
           p.write_text(s, encoding='utf-8')
           PY
 
-          # Imágenes narrativas de V10.5: se mantienen intactas.
+          # Imágenes narrativas V10.5: se mantienen.
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1770301312392-d03cc3dede90?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/hero.webp
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1776266099831-e84297aa95c5?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/story_start.webp
           cp site/assets/images/story_start.webp site/assets/images/story.webp
@@ -76,9 +79,9 @@ jobs:
           test -s site/assets/v10-6.css
           test -s site/assets/v10-6.js
           test -s site/assets/v10-6-datafix.js
-          test -s site/assets/venue/venue-garden.avif
-          test -s site/assets/venue/venue-ceremony.avif
-          test -s site/assets/venue/venue-table.avif
+          test -s site/assets/venue-generated/garden.webp
+          test -s site/assets/venue-generated/ceremony.webp
+          test -s site/assets/venue-generated/banquet.webp
           test -s site/assets/audio/music.mp3
           for f in hero story story_start story_path story_cats story_proposal ceremony banquet finale; do test -s "site/assets/images/$f.webp"; done
 
