@@ -1,0 +1,1 @@
+V10.6 release candidate: keeps V10.5 narrative intact; adds countdown, confirmed wedding data, three user-selected real venue photos, location actions and RSVP UI. Venue assets are decoded locally during Pages build.
