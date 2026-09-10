@@ -32,6 +32,8 @@ jobs:
           cp index.html site/index.html
           cp enhancements/v10-1.css site/assets/v10-1.css
           cp enhancements/v10-1.js site/assets/v10-1.js
+          cp enhancements/v10-2.css site/assets/v10-2.css
+          cp enhancements/v10-2.js site/assets/v10-2.js
           touch site/.nojekyll
 
           python - <<'PY'
@@ -48,8 +50,8 @@ jobs:
           else:
               raise SystemExit('No se localizaron los tres capítulos esperados')
 
-          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-1.css">\n</head>', 1)
-          s = s.replace('</body>', '<script src="assets/v10-1.js"></script>\n</body>', 1)
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-1.css">\n<link rel="stylesheet" href="assets/v10-2.css">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-1.js"></script>\n<script src="assets/v10-2.js"></script>\n</body>', 1)
           p.write_text(s, encoding='utf-8')
           PY
 
@@ -81,6 +83,18 @@ jobs:
             'https://images.unsplash.com/photo-1742780655266-132158926c3c?auto=format&fit=crop&fm=webp&q=78&w=1800' \
             -o site/assets/images/closing.webp
 
+          curl -L --fail --retry 3 \
+            'https://images.unsplash.com/photo-1768611259479-283d92b58b96?auto=format&fit=crop&fm=webp&q=80&w=1800' \
+            -o site/assets/images/extended-one.webp
+
+          curl -L --fail --retry 3 \
+            'https://images.unsplash.com/photo-1716285414015-5ae88c4f3ad4?auto=format&fit=crop&fm=webp&q=80&w=1800' \
+            -o site/assets/images/extended-two.webp
+
+          curl -L --fail --retry 3 \
+            'https://images.unsplash.com/photo-1764499892443-90404cde4cdc?auto=format&fit=crop&fm=webp&q=80&w=1800' \
+            -o site/assets/images/extended-three.webp
+
           python -m pip install --quiet 'yt-dlp[default,curl-cffi]'
           MUSIC_URL_PIXABAY='https://pixabay.com/music/modern-classical-sad-piano-and-violin-instrumental-background-music-279068/'
           MUSIC_URL_AUDIOCOM='https://audio.com/pedroenzo22/audio/sad-piano-and-violin-instrumental-background-music-279068'
@@ -95,10 +109,9 @@ jobs:
           fi
 
           test -s site/assets/audio/music.mp3
-          test -s site/assets/images/chapter-begin.webp
-          test -s site/assets/images/chapter-path.webp
-          test -s site/assets/images/chapter-yes.webp
-          test -s site/assets/images/closing.webp
+          test -s site/assets/images/extended-one.webp
+          test -s site/assets/images/extended-two.webp
+          test -s site/assets/images/extended-three.webp
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
