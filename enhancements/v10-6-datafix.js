@@ -7,6 +7,14 @@
   const chapterSigns=$$('.story .hand-sign');
   if(chapterSigns.length>=3)chapterSigns[2].textContent='27 · febrero · 2027';
 
+  // Sustituye la escena de la capilla por la foto real del banquete ya publicada.
+  const chapterPhotos=$$('.story .chapter .chapter-photo .bg');
+  if(chapterPhotos.length>=3){
+    chapterPhotos[2].style.backgroundImage="url('assets/venue/venue-table.avif')";
+    chapterPhotos[2].style.backgroundPosition='center';
+    chapterPhotos[2].style.filter='saturate(.9) brightness(.98)';
+  }
+
   const eventLead=eventSection?.querySelector('.lead');
   if(eventLead)eventLead.textContent='Ceremonia, banquete y celebración en el mismo lugar: Finca Los Olivos, El Vellón.';
 
@@ -18,6 +26,32 @@
     const tags=cards[1].querySelector('.tags');
     if(tags)tags.innerHTML='<span class="tag">Cóctel</span><span class="tag">Banquete</span><span class="tag">Celebración</span>';
   }
+
+  // Reduce el desenfoque aparente del bloque "Todo sucede aquí".
+  const sharp=document.createElement('style');
+  sharp.textContent=`
+    .v106-place__photo{inset:0!important;background-position:center!important;filter:none!important;}
+    .v106-place__copy{backdrop-filter:blur(5px)!important;-webkit-backdrop-filter:blur(5px)!important;}
+    @media(max-width:680px){.v106-place__photo{background-position:center center!important;}}
+  `;
+  document.head.appendChild(sharp);
+
+  const place=$('#v106Place');
+  let sharpTick=false;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  function sharpenPlace(){
+    if(place){
+      const r=place.getBoundingClientRect();
+      const span=Math.max(1,place.offsetHeight-innerHeight);
+      const p=clamp(-r.top/span,0,1);
+      const photo=place.querySelector('.v106-place__photo');
+      if(photo)photo.style.setProperty('transform',`translate3d(0,${-12+24*p}px,0) scale(1.025)`,'important');
+    }
+    sharpTick=false;
+  }
+  addEventListener('scroll',()=>{if(!sharpTick){sharpTick=true;requestAnimationFrame(sharpenPlace)}},{passive:true});
+  addEventListener('resize',sharpenPlace,{passive:true});
+  sharpenPlace();
 
   const realTimeline=[
     ['12:30','Ceremonia','El momento del “sí”. Hora aproximada.'],
