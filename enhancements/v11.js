@@ -3,7 +3,6 @@
   document.body.classList.add('v11');
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
-  // La V11 sustituye la parte visual antigua por una narrativa nítida y editorial.
   const storyHead=$('.story-head');
   if(storyHead && !$('#v11Story')){
     storyHead.insertAdjacentHTML('beforebegin',`
@@ -37,7 +36,6 @@
       </section>`);
   }
 
-  // Pregunta emocional sin typewriter: no habrá letras mezcladas ni saltos.
   const countdown=$('#v106Countdown');
   if(countdown && !$('#v11Question')){
     countdown.insertAdjacentHTML('beforebegin',`
@@ -47,30 +45,29 @@
       </section>`);
   }
 
-  // Ceremonia: ilustración vectorial nítida en cualquier pantalla.
   const eventCards=$$('.events .event');
   if(eventCards[0]){
     const img=eventCards[0].querySelector('.event-img');
     if(img) img.innerHTML=`<div class="v11-ceremony-art" aria-hidden="true"><svg viewBox="0 0 320 260"><path d="M56 220V96c0-30 23-54 52-54h104c29 0 52 24 52 54v124"/><path class="gold" d="M83 220V112c0-19 15-34 34-34h86c19 0 34 15 34 34v108"/><path d="M112 178c30-20 66-20 96 0M105 201h110"/><circle class="gold" cx="145" cy="132" r="28"/><circle class="gold" cx="177" cy="132" r="28"/><path d="M65 220h190"/></svg></div>`;
   }
-  if(eventCards[1]){
-    eventCards[1].querySelector('.event-img')?.setAttribute('aria-label','Banquete y celebración');
-  }
+  if(eventCards[1]) eventCards[1].querySelector('.event-img')?.setAttribute('aria-label','Banquete y celebración');
 
-  // Una sola fotografía fuerte del lugar, a alta resolución y SIN zoom/parallax.
   const eventSection=$('.events')?.closest('.section');
   if(eventSection && !$('#v11Place')){
     eventSection.insertAdjacentHTML('afterend',`
       <section class="v11-place" id="v11Place">
-        <img class="v11-place__img" src="assets/images/venue-hq.jpg?v=110" alt="Jardines de Finca Los Olivos, El Vellón" loading="eager" decoding="async">
-        <div class="v11-place__shade"></div>
-        <div class="v11-place__panel">
-          <div class="v11-kicker">Todo sucede aquí</div>
-          <h2>Finca Los Olivos<em>El Vellón · Madrid</em></h2>
-          <p>La ceremonia, el banquete y la celebración tendrán lugar en el mismo espacio. Así podremos disfrutar del día entero sin romper el momento.</p>
-          <div class="v11-place__buttons">
-            <a class="primary" href="https://www.google.com/maps/search/?api=1&query=Finca+Los+Olivos+Paraje+Campillo+Alto+13+El+Vellon+Madrid" target="_blank" rel="noopener">Cómo llegar ↗</a>
-            <button class="ghost" type="button" id="v11Calendar">Guardar la fecha</button>
+        <div class="v11-place__wrap">
+          <div class="v11-place__frame">
+            <img class="v11-place__img" src="assets/images/venue-hq.jpg?v=111" alt="Finca Los Olivos, El Vellón" loading="eager" decoding="async">
+          </div>
+          <div class="v11-place__panel">
+            <div class="v11-kicker">Todo sucede aquí</div>
+            <h2>Finca Los Olivos<em>El Vellón · Madrid</em></h2>
+            <p>La ceremonia, el banquete y la celebración tendrán lugar en el mismo espacio. Así podremos disfrutar del día entero sin romper el momento.</p>
+            <div class="v11-place__buttons">
+              <a class="primary" href="https://www.google.com/maps/search/?api=1&query=Finca+Los+Olivos+Paraje+Campillo+Alto+13+El+Vellon+Madrid" target="_blank" rel="noopener">Cómo llegar ↗</a>
+              <button class="ghost" type="button" id="v11Calendar">Guardar la fecha</button>
+            </div>
           </div>
         </div>
       </section>`);
@@ -81,13 +78,6 @@
     const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='boda-rocio-ivan-27-02-2027.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
   });
 
-  // El cuestionario V10.6 se conserva, pero V11 corrige validación y lenguaje.
   const submit=$('#v106Submit');
-  if(submit){
-    submit.textContent='Enviar confirmación ♡';
-    submit.addEventListener('click',()=>{
-      const form=$('#v106Form');
-      if(form) form.scrollIntoView({behavior:'smooth',block:'center'});
-    },{once:false});
-  }
+  if(submit) submit.textContent='Enviar confirmación ♡';
 })();
