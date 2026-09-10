@@ -1,0 +1,1 @@
+Ready to replace Pages workflow and V10.6 CSS with AVIF-local version.
