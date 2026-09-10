@@ -37,16 +37,29 @@ jobs:
           cp enhancements/v10-6-datafix.js site/assets/v10-6-datafix.js
           touch site/.nojekyll
 
+          # Reconstruye la imagen real enviada por el usuario, almacenada en GitHub por fragmentos.
+          cat assets/venue-src/part01.bin assets/venue-src/part02.bin assets/venue-src/part03.bin assets/venue-src/part04.bin \
+              assets/venue-src/part05.bin assets/venue-src/part06.bin assets/venue-src/part07.bin assets/venue-src/part08.bin \
+              > site/assets/venue/venue-duo.webp
+
+          python -m pip install --quiet pillow
           python - <<'PY'
           from pathlib import Path
+          from PIL import Image
+          duo = Image.open('site/assets/venue/venue-duo.webp').convert('RGB')
+          w,h = duo.size
+          assert w == 500 and h == 700, (w,h)
+          duo.crop((0,0,w,h//2)).save('site/assets/venue/venue-garden.webp','WEBP',quality=88,method=6)
+          duo.crop((0,h//2,w,h)).save('site/assets/venue/venue-ceremony.webp','WEBP',quality=88,method=6)
+
           p = Path('site/index.html')
           s = p.read_text(encoding='utf-8')
-          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=106">\n</head>', 1)
-          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=106"></script>\n<script src="assets/v10-6-datafix.js?v=1061"></script>\n</body>', 1)
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=1062">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=1062"></script>\n<script src="assets/v10-6-datafix.js?v=1061"></script>\n</body>', 1)
           p.write_text(s, encoding='utf-8')
           PY
 
-          # Imágenes de historia/base V10.5
+          # Imágenes narrativas V10.5: se mantienen intactas.
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1770301312392-d03cc3dede90?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/hero.webp
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1776266099831-e84297aa95c5?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/story_start.webp
           cp site/assets/images/story_start.webp site/assets/images/story.webp
@@ -56,23 +69,6 @@ jobs:
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1772404245994-200ca40c47fa?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/ceremony.webp
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1757283584283-7b0f22032265?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/banquet.webp
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1742780655266-132158926c3c?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/finale.webp
-
-          # Fotos reales de Finca Los Olivos. El CDN requiere cabeceras de navegador.
-          VENUE_UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
-          VENUE_REF='https://www.bodas.net/fincas/finca-los-olivos--e36165'
-          venue_get() {
-            curl -L --fail --retry 3 --retry-all-errors \
-              -A "$VENUE_UA" -e "$VENUE_REF" \
-              -H 'Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8' \
-              -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \
-              "$1" -o "$2"
-          }
-          venue_get 'https://cdn0.bodas.net/vendor/36165/3_2/1280/jpg/img-20220905-wa0016_1_36165-167630987393431.jpeg' site/assets/venue/venue-garden-path.webp
-          venue_get 'https://cdn0.bodas.net/vendor/36165/3_2/1280/jpg/img-20220905-wa0017_1_36165-167630989214500.jpeg' site/assets/venue/venue-glasshouse-exterior.webp
-          venue_get 'https://cdn0.bodas.net/vendor/36165/3_2/1280/jpg/m-t-13-1_1_36165-175403133471517.jpeg' site/assets/venue/venue-ceremony.webp
-          venue_get 'https://cdn0.bodas.net/vendor/36165/3_2/960/jpg/screenshot-20230211-101319-whatsapp_1_36165-167630997522431.jpeg' site/assets/venue/venue-table.webp
-          venue_get 'https://cdn0.bodas.net/vendor/36165/3_2/960/jpg/b-d-7750_1_36165-175406219475004.jpeg' site/assets/venue/venue-love.webp
-          venue_get 'https://cdn0.bodas.net/vendor/36165/3_2/960/jpg/lo-29_1_36165-175406219521855.jpeg' site/assets/venue/venue-night-path.webp
 
           python -m pip install --quiet 'yt-dlp[default,curl-cffi]'
           MUSIC_URL_PIXABAY='https://pixabay.com/music/modern-classical-sad-piano-and-violin-instrumental-background-music-279068/'
@@ -88,9 +84,10 @@ jobs:
           test -s site/assets/v10-6.css
           test -s site/assets/v10-6.js
           test -s site/assets/v10-6-datafix.js
+          test -s site/assets/venue/venue-garden.webp
+          test -s site/assets/venue/venue-ceremony.webp
           test -s site/assets/audio/music.mp3
           for f in hero story story_start story_path story_cats story_proposal ceremony banquet finale; do test -s "site/assets/images/$f.webp"; done
-          for f in venue-garden-path venue-ceremony venue-table venue-love venue-night-path venue-glasshouse-exterior; do test -s "site/assets/venue/$f.webp"; done
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
