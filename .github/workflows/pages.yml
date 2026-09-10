@@ -46,8 +46,8 @@ jobs:
           from pathlib import Path
           p = Path('site/index.html')
           s = p.read_text(encoding='utf-8')
-          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=1063">\n</head>', 1)
-          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=1063"></script>\n<script src="assets/v10-6-datafix.js?v=1061"></script>\n</body>', 1)
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=1064">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=1064"></script>\n<script src="assets/v10-6-datafix.js?v=1062"></script>\n</body>', 1)
           p.write_text(s, encoding='utf-8')
           PY
 
