@@ -1,0 +1,97 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build static site
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/assets/images site/assets/audio site/assets/venue
+          cp index.html site/index.html
+          cp enhancements/v10-5.css site/assets/v10-5.css
+          cp enhancements/v10-5.js site/assets/v10-5.js
+          cp enhancements/v10-6.css site/assets/v10-6.css
+          cp enhancements/v10-6.js site/assets/v10-6.js
+          cp enhancements/v10-6-datafix.js site/assets/v10-6-datafix.js
+          touch site/.nojekyll
+
+          # Fotos reales seleccionadas por el usuario. Sin CDN externo.
+          base64 -d assets/venue/venue-garden-path.avif.b64 > site/assets/venue/venue-garden.avif
+          base64 -d assets/venue/venue-ceremony.avif.b64 > site/assets/venue/venue-ceremony.avif
+          base64 -d assets/venue/venue-table.avif.b64 > site/assets/venue/venue-table.avif
+
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('site/index.html')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=1063">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=1063"></script>\n<script src="assets/v10-6-datafix.js?v=1061"></script>\n</body>', 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+          # Imágenes narrativas de V10.5: se mantienen intactas.
+          curl -L --fail --retry 3 'https://images.unsplash.com/photo-1770301312392-d03cc3dede90?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/hero.webp
+          curl -L --fail --retry 3 'https://images.unsplash.com/photo-1776266099831-e84297aa95c5?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/story_start.webp
+          cp site/assets/images/story_start.webp site/assets/images/story.webp
+          curl -L --fail --retry 3 'https://images.unsplash.com/photo-1542891433-684dbf58d399?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/story_path.webp
+          curl -L --fail --retry 3 'https://images.pexels.com/photos/20041689/pexels-photo-20041689.jpeg?cs=srgb&dl=pexels-eyupcan-timur-424989336-20041689.jpg&fm=jpg' -o site/assets/images/story_cats.webp
+          curl -L --fail --retry 3 'https://images.unsplash.com/photo-1768777273699-1f8ccd51aaff?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/story_proposal.webp
+          curl -L --fail --retry 3 'https://images.unsplash.com/photo-1772404245994-200ca40c47fa?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/ceremony.webp
+          curl -L --fail --retry 3 'https://images.unsplash.com/photo-1757283584283-7b0f22032265?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/banquet.webp
+          curl -L --fail --retry 3 'https://images.unsplash.com/photo-1742780655266-132158926c3c?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/finale.webp
+
+          python -m pip install --quiet 'yt-dlp[default,curl-cffi]'
+          MUSIC_URL_PIXABAY='https://pixabay.com/music/modern-classical-sad-piano-and-violin-instrumental-background-music-279068/'
+          MUSIC_URL_AUDIOCOM='https://audio.com/pedroenzo22/audio/sad-piano-and-violin-instrumental-background-music-279068'
+          if ! yt-dlp --extractor-args 'generic:impersonate' --impersonate chrome -f 'bestaudio/best' -o 'site/assets/audio/music.mp3' "$MUSIC_URL_PIXABAY"; then
+            rm -f site/assets/audio/music.mp3
+            yt-dlp --extractor-args 'generic:impersonate' --impersonate chrome -f 'bestaudio/best' -o 'site/assets/audio/music.mp3' "$MUSIC_URL_AUDIOCOM"
+          fi
+
+          test -s site/index.html
+          test -s site/assets/v10-5.css
+          test -s site/assets/v10-5.js
+          test -s site/assets/v10-6.css
+          test -s site/assets/v10-6.js
+          test -s site/assets/v10-6-datafix.js
+          test -s site/assets/venue/venue-garden.avif
+          test -s site/assets/venue/venue-ceremony.avif
+          test -s site/assets/venue/venue-table.avif
+          test -s site/assets/audio/music.mp3
+          for f in hero story story_start story_path story_cats story_proposal ceremony banquet finale; do test -s "site/assets/images/$f.webp"; done
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
