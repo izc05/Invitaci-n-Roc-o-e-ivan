@@ -1,0 +1,1 @@
+V10.6.3 usa fotografías reales seleccionadas por el usuario para jardín y banquete. Se mantienen optimizadas para GitHub Pages y con zoom/parallax limitado para evitar pérdida de nitidez.
