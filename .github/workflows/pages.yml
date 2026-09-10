@@ -28,18 +28,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p site/assets/images site/assets/audio
+          mkdir -p site/assets/images site/assets/audio site/assets/venue
           cp index.html site/index.html
           cp enhancements/v10-5.css site/assets/v10-5.css
           cp enhancements/v10-5.js site/assets/v10-5.js
+          cp enhancements/v10-6.css site/assets/v10-6.css
+          cp enhancements/v10-6.js site/assets/v10-6.js
+          cp enhancements/v10-6-datafix.js site/assets/v10-6-datafix.js
+          unzip -q assets/venue-pack.zip -d site/assets/venue
           touch site/.nojekyll
 
           python - <<'PY'
           from pathlib import Path
           p = Path('site/index.html')
           s = p.read_text(encoding='utf-8')
-          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n</head>', 1)
-          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n</body>', 1)
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=106">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=106"></script>\n<script src="assets/v10-6-datafix.js?v=1061"></script>\n</body>', 1)
           p.write_text(s, encoding='utf-8')
           PY
 
@@ -79,22 +83,25 @@ jobs:
           python -m pip install --quiet 'yt-dlp[default,curl-cffi]'
           MUSIC_URL_PIXABAY='https://pixabay.com/music/modern-classical-sad-piano-and-violin-instrumental-background-music-279068/'
           MUSIC_URL_AUDIOCOM='https://audio.com/pedroenzo22/audio/sad-piano-and-violin-instrumental-background-music-279068'
-
           if ! yt-dlp --extractor-args 'generic:impersonate' --impersonate chrome \
-            -f 'bestaudio/best' \
-            -o 'site/assets/audio/music.mp3' "$MUSIC_URL_PIXABAY"; then
+            -f 'bestaudio/best' -o 'site/assets/audio/music.mp3' "$MUSIC_URL_PIXABAY"; then
             rm -f site/assets/audio/music.mp3
             yt-dlp --extractor-args 'generic:impersonate' --impersonate chrome \
-              -f 'bestaudio/best' \
-              -o 'site/assets/audio/music.mp3' "$MUSIC_URL_AUDIOCOM"
+              -f 'bestaudio/best' -o 'site/assets/audio/music.mp3' "$MUSIC_URL_AUDIOCOM"
           fi
 
           test -s site/index.html
           test -s site/assets/v10-5.css
           test -s site/assets/v10-5.js
+          test -s site/assets/v10-6.css
+          test -s site/assets/v10-6.js
+          test -s site/assets/v10-6-datafix.js
           test -s site/assets/audio/music.mp3
           for f in hero story story_start story_path story_cats story_proposal ceremony banquet finale; do
             test -s "site/assets/images/$f.webp"
+          done
+          for f in venue-garden-path venue-ceremony venue-table venue-love venue-night-path venue-glasshouse-exterior; do
+            test -s "site/assets/venue/$f.webp"
           done
 
       - name: Configure Pages
