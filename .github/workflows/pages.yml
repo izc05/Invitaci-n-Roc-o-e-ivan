@@ -57,7 +57,7 @@ jobs:
             -o site/assets/images/story_path.webp
 
           curl -L --fail --retry 3 \
-            'https://unsplash.com/photos/w6tMRf7kGLA/download?force=true' \
+            'https://images.pexels.com/photos/20041689/pexels-photo-20041689.jpeg?cs=srgb&dl=pexels-eyupcan-timur-424989336-20041689.jpg&fm=jpg' \
             -o site/assets/images/story_cats.webp
 
           curl -L --fail --retry 3 \
