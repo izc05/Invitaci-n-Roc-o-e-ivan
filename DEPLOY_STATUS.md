@@ -1,1 +1,1 @@
-GitHub Pages deployment configured for the V10 mobile invitation.
+V10.6 candidate: selected real venue photos stored locally; ready for Pages validation.
