@@ -35,14 +35,14 @@ jobs:
           cp enhancements/v10-6.css site/assets/v10-6.css
           cp enhancements/v10-6.js site/assets/v10-6.js
           cp enhancements/v10-6-datafix.js site/assets/v10-6-datafix.js
+          cp enhancements/v11.css site/assets/v11.css
+          cp enhancements/v11.js site/assets/v11.js
           touch site/.nojekyll
 
-          # Fotografías reales de Finca Los Olivos, almacenadas de forma estable.
+          # Recursos reales anteriores: se conservan como respaldo.
           base64 -d assets/venue/venue-garden-path.avif.b64 > site/assets/venue/venue-garden.avif
           base64 -d assets/venue/venue-ceremony.avif.b64 > site/assets/venue/venue-ceremony.avif
           base64 -d assets/venue/venue-table.avif.b64 > site/assets/venue/venue-table.avif
-
-          # Recursos V10.6.2 se conservan como reserva.
           cp assets/venue-generated/garden.webp site/assets/venue-generated/garden.webp
           cp assets/venue-generated/ceremony.webp site/assets/venue-generated/ceremony.webp
           cp assets/venue-generated/banquet.webp site/assets/venue-generated/banquet.webp
@@ -51,12 +51,12 @@ jobs:
           from pathlib import Path
           p = Path('site/index.html')
           s = p.read_text(encoding='utf-8')
-          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=10631">\n</head>', 1)
-          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=10631"></script>\n<script src="assets/v10-6-datafix.js?v=10631"></script>\n</body>', 1)
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=10631">\n<link rel="stylesheet" href="assets/v11.css?v=111">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=10631"></script>\n<script src="assets/v10-6-datafix.js?v=10631"></script>\n<script src="assets/v11.js?v=111"></script>\n</body>', 1)
           p.write_text(s, encoding='utf-8')
           PY
 
-          # Imágenes narrativas V10.5: se mantienen.
+          # V10.5 queda como base de compatibilidad; sus escenas antiguas quedan ocultas por V11.
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1770301312392-d03cc3dede90?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/hero.webp
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1776266099831-e84297aa95c5?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/story_start.webp
           cp site/assets/images/story_start.webp site/assets/images/story.webp
@@ -66,6 +66,11 @@ jobs:
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1772404245994-200ca40c47fa?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/ceremony.webp
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1757283584283-7b0f22032265?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/banquet.webp
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1742780655266-132158926c3c?auto=format&fit=crop&fm=webp&q=82&w=1800' -o site/assets/images/finale.webp
+
+          # V11: fotografía del lugar en resolución alta, sin ampliación en móvil.
+          curl -A 'Mozilla/5.0' -L --fail --retry 3 'https://s2.elespanol.com/2025/03/13/actualidad/930917800_253883939_1706x960.jpg' -o site/assets/images/venue-hq.jpg
+          # Banquete genérico nítido y de alta resolución; evita miniaturas/composición borrosa.
+          curl -L --fail --retry 3 'https://images.unsplash.com/photo-1767961054378-4092dbeb7c3b?auto=format&fit=crop&fm=jpg&q=84&w=1800' -o site/assets/images/v11-banquet.jpg
 
           python -m pip install --quiet 'yt-dlp[default,curl-cffi]'
           MUSIC_URL_PIXABAY='https://pixabay.com/music/modern-classical-sad-piano-and-violin-instrumental-background-music-279068/'
@@ -81,9 +86,10 @@ jobs:
           test -s site/assets/v10-6.css
           test -s site/assets/v10-6.js
           test -s site/assets/v10-6-datafix.js
-          test -s site/assets/venue/venue-garden.avif
-          test -s site/assets/venue/venue-ceremony.avif
-          test -s site/assets/venue/venue-table.avif
+          test -s site/assets/v11.css
+          test -s site/assets/v11.js
+          test -s site/assets/images/venue-hq.jpg
+          test -s site/assets/images/v11-banquet.jpg
           test -s site/assets/audio/music.mp3
           for f in hero story story_start story_path story_cats story_proposal ceremony banquet finale; do test -s "site/assets/images/$f.webp"; done
 
