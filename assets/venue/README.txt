@@ -1,0 +1,1 @@
+Real venue photos selected by the user for V10.6: garden, ceremony and banquet. Binary image entries are added in the release tree; no external venue CDN is required.
