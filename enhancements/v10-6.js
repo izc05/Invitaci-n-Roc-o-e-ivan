@@ -73,9 +73,9 @@
   }
 
   $('#v106Calendar')?.addEventListener('click',()=>{
-    const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//RocioIvan//Boda//ES','BEGIN:VEVENT','UID:rocio-ivan-20270227@invitacion','DTSTAMP:20260910T063000Z','DTSTART:20270227T113000Z','DTEND:20270227T225900Z','SUMMARY:Boda de Rocío e Iván','LOCATION:Finca Los Olivos, El Vellón, Madrid','DESCRIPTION:Ceremonia y celebración en Finca Los Olivos. Hora aproximada: 12:30 h.','END:VEVENT','END:VCALENDAR'].join('\r\n');
+    const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//RocioIvan//Boda//ES','BEGIN:VEVENT','UID:rocio-ivan-20270227@invitacion','DTSTAMP:20260910T063000Z','DTSTART:20270227T113000Z','DTEND:20270227T225900Z','SUMMARY:Boda de Iván y Rocío','LOCATION:Finca Los Olivos, El Vellón, Madrid','DESCRIPTION:Ceremonia y celebración en Finca Los Olivos. Hora aproximada: 12:30 h.','END:VEVENT','END:VCALENDAR'].join('\r\n');
     const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url;a.download='boda-rocio-ivan-27-02-2027.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);
+    a.href=url;a.download='boda-ivan-rocio-27-02-2027.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);
   });
 
   const shell=$('.rsvp-shell');
