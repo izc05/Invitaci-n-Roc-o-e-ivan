@@ -72,12 +72,16 @@ jobs:
           # Banquete genérico nítido y de alta resolución; evita miniaturas/composición borrosa.
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1767961054378-4092dbeb7c3b?auto=format&fit=crop&fm=jpg&q=84&w=1800' -o site/assets/images/v11-banquet.jpg
 
+          # Música opcional: una caída o bloqueo del proveedor no debe impedir publicar la invitación.
           python -m pip install --quiet 'yt-dlp[default,curl-cffi]'
           MUSIC_URL_PIXABAY='https://pixabay.com/music/modern-classical-sad-piano-and-violin-instrumental-background-music-279068/'
           MUSIC_URL_AUDIOCOM='https://audio.com/pedroenzo22/audio/sad-piano-and-violin-instrumental-background-music-279068'
           if ! yt-dlp --extractor-args 'generic:impersonate' --impersonate chrome -f 'bestaudio/best' -o 'site/assets/audio/music.mp3' "$MUSIC_URL_PIXABAY"; then
             rm -f site/assets/audio/music.mp3
-            yt-dlp --extractor-args 'generic:impersonate' --impersonate chrome -f 'bestaudio/best' -o 'site/assets/audio/music.mp3' "$MUSIC_URL_AUDIOCOM"
+            if ! yt-dlp --extractor-args 'generic:impersonate' --impersonate chrome -f 'bestaudio/best' -o 'site/assets/audio/music.mp3' "$MUSIC_URL_AUDIOCOM"; then
+              echo "::warning::Música externa no disponible; la invitación se publicará sin audio."
+              rm -f site/assets/audio/music.mp3
+            fi
           fi
 
           test -s site/index.html
@@ -90,7 +94,6 @@ jobs:
           test -s site/assets/v11.js
           test -s site/assets/images/venue-hq.jpg
           test -s site/assets/images/v11-banquet.jpg
-          test -s site/assets/audio/music.mp3
           for f in hero story story_start story_path story_cats story_proposal ceremony banquet finale; do test -s "site/assets/images/$f.webp"; done
 
       - name: Configure Pages
