@@ -1,7 +1,7 @@
 (()=>{
   'use strict';
   document.body.classList.add('v105');
-  document.title='Rocío & Iván · Nuestra historia';
+  document.title='Iván & Rocío · Nuestra historia';
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -63,12 +63,11 @@
     requestAnimationFrame(tick);
   }
 
-  function startMusicFrom20(){
+  function startMusicFromBeginning(){
     const audio=$('#music'),btn=$('#musicBtn'); if(!audio)return;
     try{
       audio.volume=0;
-      const seek=()=>{try{if(!Number.isFinite(audio.duration)||audio.duration>20)audio.currentTime=20}catch(e){}};
-      if(audio.readyState>=1)seek(); else audio.addEventListener('loadedmetadata',seek,{once:true});
+      try{audio.currentTime=0}catch(e){}
       const p=audio.play();
       if(p&&typeof p.then==='function')p.then(()=>{btn?.classList.add('on');if(btn)btn.textContent='♪';fadeMusicTo(.70,2400)}).catch(()=>{btn?.classList.remove('on')});
     }catch(e){}
@@ -79,11 +78,15 @@
     enter.onclick=()=>{
       enter.disabled=true;
       opening?.classList.add('hide');
-      startMusicFrom20();
+      startMusicFromBeginning();
       const pre=$('#v105Prelude');
+      document.body.classList.add('v105-prelude-lock');
       pre?.classList.add('show');
       slowType($('#v105PreludeText'),'Si estás aquí es porque formas parte de nuestra historia. Antes de enseñarte el día que hemos imaginado, queríamos compartir contigo algunos de los pequeños momentos que nos trajeron hasta él.',48).then(()=>{
-        setTimeout(()=>pre?.classList.add('hide'),3300);
+        setTimeout(()=>{
+          pre?.classList.add('hide');
+          document.body.classList.remove('v105-prelude-lock');
+        },900);
       });
       setTimeout(()=>slowType($('#heroType'),'Después de tantos momentos compartidos, ha llegado uno que no queremos vivir sin ti. Gracias por formar parte de nuestra historia.',46),5400);
       petals(7);
@@ -94,7 +97,6 @@
   if(musicBtn&&audio){
     musicBtn.onclick=()=>{
       if(audio.paused){
-        try{if(audio.currentTime<1&&audio.readyState>=1)audio.currentTime=20}catch(e){}
         const p=audio.play();if(p&&p.then)p.then(()=>{musicBtn.classList.add('on');musicBtn.textContent='♪'}).catch(()=>{});
       }else{audio.pause();musicBtn.classList.remove('on');musicBtn.textContent='♫'}
     };

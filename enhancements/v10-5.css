@@ -1,5 +1,6 @@
 /* Rocío & Iván · V10.5 · scroll cinematográfico móvil */
 body.v105{overscroll-behavior-y:none}
+body.v105.v105-prelude-lock{overflow:hidden!important;touch-action:none;overscroll-behavior:none}
 body.v105 .cursor,body.v105 .nib{display:none!important}
 
 /* Entrada más emocional */
