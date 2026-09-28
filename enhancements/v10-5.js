@@ -75,20 +75,34 @@
 
   const enter=$('#enterBtn');
   if(enter){
-    enter.onclick=()=>{
+    enter.onclick=async()=>{
       enter.disabled=true;
       opening?.classList.add('hide');
       startMusicFromBeginning();
       const pre=$('#v105Prelude');
       document.body.classList.add('v105-prelude-lock');
       pre?.classList.add('show');
-      slowType($('#v105PreludeText'),'Si estás aquí es porque formas parte de nuestra historia. Antes de enseñarte el día que hemos imaginado, queríamos compartir contigo algunos de los pequeños momentos que nos trajeron hasta él.',48).then(()=>{
-        setTimeout(()=>{
-          pre?.classList.add('hide');
-          document.body.classList.remove('v105-prelude-lock');
-        },900);
-      });
-      setTimeout(()=>slowType($('#heroType'),'Después de tantos momentos compartidos, ha llegado uno que no queremos vivir sin ti. Gracias por formar parte de nuestra historia.',46),5400);
+
+      // Bloqueo total: no se libera el scroll hasta que termina TODA la escritura inicial.
+      await slowType(
+        $('#v105PreludeText'),
+        'Si estás aquí es porque formas parte de nuestra historia. Antes de enseñarte el día que hemos imaginado, queríamos compartir contigo algunos de los pequeños momentos que nos trajeron hasta él.',
+        48
+      );
+
+      await sleep(900);
+      pre?.classList.add('hide');
+
+      // Dejamos terminar la transición del preámbulo antes de escribir el texto del hero.
+      await sleep(1150);
+      await slowType(
+        $('#heroType'),
+        'Después de tantos momentos compartidos, ha llegado uno que no queremos vivir sin ti. Gracias por formar parte de nuestra historia.',
+        46
+      );
+
+      await sleep(250);
+      document.body.classList.remove('v105-prelude-lock');
       petals(7);
     };
   }
