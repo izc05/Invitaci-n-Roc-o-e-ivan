@@ -28,7 +28,7 @@
 
   const opening=$('#opening');
   if(opening){
-    opening.insertAdjacentHTML('afterend',`<div class="v105-prelude" id="v105Prelude"><div class="v105-prelude__inner"><small>Antes de darte una fecha</small><h2>Queríamos contarte algo.</h2><p id="v105PreludeText"></p><div class="v105-prelude__mark" aria-hidden="true"></div></div></div>`);
+    opening.insertAdjacentHTML('afterend',`<div class="v105-prelude" id="v105Prelude"><div class="v105-prelude__inner"><h2>Tenemos algo que contaros…</h2><p id="v105PreludeText"></p><div class="v105-prelude__mark" aria-hidden="true"></div></div></div>`);
   }
 
   const story=$('.story');
@@ -86,22 +86,16 @@
       // Bloqueo total: no se libera el scroll hasta que termina TODA la escritura inicial.
       await slowType(
         $('#v105PreludeText'),
-        'Si estás aquí es porque formas parte de nuestra historia. Antes de enseñarte el día que hemos imaginado, queríamos compartir contigo algunos de los pequeños momentos que nos trajeron hasta él.',
+        'Hay historias que se escriben entre dos, pero que no serían las mismas sin quienes las acompañan.',
         48
       );
 
       await sleep(900);
       pre?.classList.add('hide');
 
-      // Dejamos terminar la transición del preámbulo antes de escribir el texto del hero.
+      // El documento pide retirar la frase del hero; tras acabar la escritura,
+      // esperamos la transición y entonces habilitamos el scroll.
       await sleep(1150);
-      await slowType(
-        $('#heroType'),
-        'Después de tantos momentos compartidos, ha llegado uno que no queremos vivir sin ti. Gracias por formar parte de nuestra historia.',
-        46
-      );
-
-      await sleep(250);
       document.body.classList.remove('v105-prelude-lock');
       petals(7);
     };
