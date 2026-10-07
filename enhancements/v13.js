@@ -31,24 +31,6 @@
     sheet?.classList.add('v13-open');
   },true);
 
-  /* El zoom empieza exactamente cuando la carta termina y el fondo queda visible. */
-  const startHeroZoom=()=>{
-    if(!hero || reduce || hero.classList.contains('v13-awake')) return;
-    requestAnimationFrame(()=>hero.classList.add('v13-awake'));
-  };
-  if(opening){
-    const openingObserver=new MutationObserver(()=>{
-      if(opening.classList.contains('hide')){
-        startHeroZoom();
-        openingObserver.disconnect();
-      }
-    });
-    openingObserver.observe(opening,{attributes:true,attributeFilter:['class']});
-    if(opening.classList.contains('hide')) startHeroZoom();
-  }else{
-    startHeroZoom();
-  }
-
   /* Pantalla completa real cuando el navegador la soporta. */
   const canFullscreen=!!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
   if(canFullscreen && !$('#v13Fullscreen')){
