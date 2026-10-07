@@ -38,7 +38,10 @@ jobs:
           cp enhancements/v11.css site/assets/v11.css
           cp enhancements/v11.js site/assets/v11.js
           cp enhancements/v12.css site/assets/v12.css
-          cp enhancements/v12.js site/assets/v12.js\n          cp enhancements/v13.css site/assets/v13.css\n          cp enhancements/v13.js site/assets/v13.js\n          cp assets/brand/ivan-rocio-mark.svg site/assets/brand/ivan-rocio-mark.svg
+          cp enhancements/v12.js site/assets/v12.js
+          cp enhancements/v13.css site/assets/v13.css
+          cp enhancements/v13.js site/assets/v13.js
+          cp assets/brand/ivan-rocio-mark.svg site/assets/brand/ivan-rocio-mark.svg
           touch site/.nojekyll
 
           # Recursos reales anteriores: se conservan como respaldo.
@@ -89,7 +92,10 @@ jobs:
           test -s site/assets/v11.css
           test -s site/assets/v11.js
           test -s site/assets/v12.css
-          test -s site/assets/v12.js\n          test -s site/assets/v13.css\n          test -s site/assets/v13.js\n          test -s site/assets/brand/ivan-rocio-mark.svg
+          test -s site/assets/v12.js
+          test -s site/assets/v13.css
+          test -s site/assets/v13.js
+          test -s site/assets/brand/ivan-rocio-mark.svg
           for f in rocio-ivan-hero rocio-ivan-story-2 rocio-ivan-story-3 rocio-ivan-story-4 rocio-ivan-final; do test -s "site/assets/images/$f.webp"; done
           test -s site/assets/audio/music.mp3
           test -s site/assets/images/venue-hq.jpg
