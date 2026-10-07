@@ -136,12 +136,6 @@
   function progressFor(sec,vh){const r=sec.getBoundingClientRect(),span=Math.max(1,sec.offsetHeight-vh);return clamp(-r.top/span,0,1)}
   function parallax(){
     const vh=innerHeight;
-    const hero=$('.hero'),heroBg=$('#heroBg');
-    if(hero&&heroBg&&!reduce){
-      const p=progressFor(hero,vh);
-      heroBg.style.setProperty('transform',`translate3d(0,${-82*p}px,0) scale(${1.18-.09*p})`,'important');
-    }
-
     $$('.story .chapter').forEach(sec=>{
       const p=progressFor(sec,vh),bg=sec.querySelector('.chapter-photo .bg'),copy=sec.querySelector('.chapter-copy');
       if(bg&&!reduce)bg.style.setProperty('transform',`translate3d(0,${-105+210*p}px,0) scale(${1.19-.11*p})`,'important');
