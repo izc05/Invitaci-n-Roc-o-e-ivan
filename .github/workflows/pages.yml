@@ -37,6 +37,8 @@ jobs:
           cp enhancements/v10-6-datafix.js site/assets/v10-6-datafix.js
           cp enhancements/v11.css site/assets/v11.css
           cp enhancements/v11.js site/assets/v11.js
+          cp enhancements/v12.css site/assets/v12.css
+          cp enhancements/v12.js site/assets/v12.js
           touch site/.nojekyll
 
           # Recursos reales anteriores: se conservan como respaldo.
@@ -51,8 +53,8 @@ jobs:
           from pathlib import Path
           p = Path('site/index.html')
           s = p.read_text(encoding='utf-8')
-          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=10631">\n<link rel="stylesheet" href="assets/v11.css?v=111">\n</head>', 1)
-          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=10631"></script>\n<script src="assets/v10-6-datafix.js?v=10631"></script>\n<script src="assets/v11.js?v=111"></script>\n</body>', 1)
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=10631">\n<link rel="stylesheet" href="assets/v11.css?v=111">\n<link rel="stylesheet" href="assets/v12.css?v=120">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=10631"></script>\n<script src="assets/v10-6-datafix.js?v=10631"></script>\n<script src="assets/v11.js?v=111"></script>\n<script src="assets/v12.js?v=120"></script>\n</body>', 1)
           p.write_text(s, encoding='utf-8')
           PY
 
@@ -72,6 +74,9 @@ jobs:
           # Banquete genérico nítido y de alta resolución; evita miniaturas/composición borrosa.
           curl -L --fail --retry 3 'https://images.unsplash.com/photo-1767961054378-4092dbeb7c3b?auto=format&fit=crop&fm=jpg&q=84&w=1800' -o site/assets/images/v11-banquet.jpg
 
+          # V12: fotografías reales de Iván y Rocío, optimizadas para web.
+          unzip -o assets/photos/rocio-ivan-v12-photos.zip -d site/assets/images
+
           # Música de fondo incluida en el propio proyecto.
           cp assets/audio/music.mp3 site/assets/audio/music.mp3
 
@@ -83,6 +88,9 @@ jobs:
           test -s site/assets/v10-6-datafix.js
           test -s site/assets/v11.css
           test -s site/assets/v11.js
+          test -s site/assets/v12.css
+          test -s site/assets/v12.js
+          for f in rocio-ivan-hero rocio-ivan-story-2 rocio-ivan-story-3 rocio-ivan-story-4 rocio-ivan-final; do test -s "site/assets/images/$f.webp"; done
           test -s site/assets/audio/music.mp3
           test -s site/assets/images/venue-hq.jpg
           test -s site/assets/images/v11-banquet.jpg
