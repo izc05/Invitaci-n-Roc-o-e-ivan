@@ -41,6 +41,8 @@ jobs:
           cp enhancements/v12.js site/assets/v12.js
           cp enhancements/v13.css site/assets/v13.css
           cp enhancements/v13.js site/assets/v13.js
+          cp enhancements/v14.css site/assets/v14.css
+          cp enhancements/v14.js site/assets/v14.js
           cp assets/brand/ivan-rocio-mark.svg site/assets/brand/ivan-rocio-mark.svg
           touch site/.nojekyll
 
@@ -95,6 +97,8 @@ jobs:
           test -s site/assets/v12.js
           test -s site/assets/v13.css
           test -s site/assets/v13.js
+          test -s site/assets/v14.css
+          test -s site/assets/v14.js
           test -s site/assets/brand/ivan-rocio-mark.svg
           for f in rocio-ivan-hero rocio-ivan-story-2 rocio-ivan-story-3 rocio-ivan-story-4 rocio-ivan-final; do test -s "site/assets/images/$f.webp"; done
           test -s site/assets/audio/music.mp3
