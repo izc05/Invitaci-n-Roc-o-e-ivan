@@ -1,0 +1,45 @@
+/* Rocío & Iván · V14 · fullscreen automático + zoom cinematográfico */
+body.v14 .hero::before{
+  display:none!important;
+  content:none!important;
+}
+body.v14 .hero-bg{
+  will-change:transform;
+}
+body.v14 .hero.v14-zoom-first .hero-bg{
+  animation:v14ZoomOutFirst 8.5s cubic-bezier(.16,.72,.22,1) both!important;
+}
+@keyframes v14ZoomOutFirst{
+  0%{transform:scale(1.18) translate3d(0,0,0)}
+  100%{transform:scale(1.03) translate3d(0,0,0)}
+}
+
+/* La última imagen repite el mismo lenguaje visual al entrar en pantalla. */
+body.v14 footer::before{
+  will-change:transform;
+}
+body.v14 footer.v14-zoom-last::before{
+  animation:v14ZoomOutLast 9s cubic-bezier(.16,.72,.22,1) both!important;
+}
+@keyframes v14ZoomOutLast{
+  0%{transform:scale(1.18) translate3d(0,0,0)}
+  100%{transform:scale(1.03) translate3d(0,0,0)}
+}
+
+/* El control permanece disponible para salir o volver a entrar en fullscreen. */
+body.v14 .v13-fullscreen{
+  transition:transform .22s ease,background .22s ease,opacity .22s ease;
+}
+body.v14 .v13-fullscreen:active{transform:scale(.94)}
+body.v14:fullscreen .v13-fullscreen,
+body.v14:-webkit-full-screen .v13-fullscreen{
+  background:linear-gradient(135deg,var(--v13-gold),#dec69e);
+  color:#2f2924;
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.v14 .hero.v14-zoom-first .hero-bg,
+  body.v14 footer.v14-zoom-last::before{
+    animation:none!important;
+  }
+}
