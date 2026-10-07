@@ -26,11 +26,28 @@
     opening.addEventListener('pointercancel',reset,{passive:true});
   }
 
-  /* Capturamos antes del manejador existente: la carta avanza en profundidad al abrirse. */
+  /* La carta avanza en profundidad al pulsar, pero el zoom de la foto NO empieza todavía. */
   enter?.addEventListener('click',()=>{
     sheet?.classList.add('v13-open');
-    setTimeout(()=>hero?.classList.add('v13-awake'),520);
   },true);
+
+  /* El zoom empieza exactamente cuando la carta termina y el fondo queda visible. */
+  const startHeroZoom=()=>{
+    if(!hero || reduce || hero.classList.contains('v13-awake')) return;
+    requestAnimationFrame(()=>hero.classList.add('v13-awake'));
+  };
+  if(opening){
+    const openingObserver=new MutationObserver(()=>{
+      if(opening.classList.contains('hide')){
+        startHeroZoom();
+        openingObserver.disconnect();
+      }
+    });
+    openingObserver.observe(opening,{attributes:true,attributeFilter:['class']});
+    if(opening.classList.contains('hide')) startHeroZoom();
+  }else{
+    startHeroZoom();
+  }
 
   /* Pantalla completa real cuando el navegador la soporta. */
   const canFullscreen=!!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
@@ -65,6 +82,4 @@
     sync();
   }
 
-  /* Si la pantalla inicial se salta por cualquier razón, el hero conserva el efecto de entrada. */
-  if(opening?.classList.contains('hide')) hero?.classList.add('v13-awake');
 })();

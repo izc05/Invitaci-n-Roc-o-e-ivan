@@ -10,7 +10,7 @@ body.v105 .cursor,body.v105 .nib{display:none!important}
 
 /* Hero con más recorrido */
 body.v105 .hero{min-height:118svh!important;padding-bottom:10svh!important}
-body.v105 .hero-bg{inset:-12%!important;transform:translate3d(0,0,0) scale(1.17)!important;will-change:transform;transition:none!important}
+body.v105 .hero-bg{inset:-12%!important;will-change:transform;transition:none!important}
 body.v105 .hero-card{transition:opacity .18s linear,transform .18s linear}
 
 /* Los capítulos originales pasan a storytelling sticky */
@@ -54,4 +54,4 @@ body.v105 footer{min-height:105svh!important}.v105 footer::before{inset:-10%!imp
   .v105-cats{min-height:195svh}.v105-cats__copy{width:calc(100% - 30px)}
   body.v105 .event-img{height:300px!important}
 }
-@media(prefers-reduced-motion:reduce){.v105-prelude__mark{animation:none}.v105-moment__photo,.v105-cats__photo,body.v105 .story .chapter-photo .bg,body.v105 .hero-bg{transform:scale(1.08)!important}}
+@media(prefers-reduced-motion:reduce){.v105-prelude__mark{animation:none}.v105-moment__photo,.v105-cats__photo,body.v105 .story .chapter-photo .bg{transform:scale(1.08)!important}}
