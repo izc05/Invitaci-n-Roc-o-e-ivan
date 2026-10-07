@@ -56,8 +56,8 @@ jobs:
           from pathlib import Path
           p = Path('site/index.html')
           s = p.read_text(encoding='utf-8')
-          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=10631">\n<link rel="stylesheet" href="assets/v11.css?v=111">\n<link rel="stylesheet" href="assets/v12.css?v=120">\n<link rel="stylesheet" href="assets/v13.css?v=130">\n</head>', 1)
-          s = s.replace('</body>', '<script src="assets/v10-5.js?v=105"></script>\n<script src="assets/v10-6.js?v=10631"></script>\n<script src="assets/v10-6-datafix.js?v=10631"></script>\n<script src="assets/v11.js?v=111"></script>\n<script src="assets/v12.js?v=120"></script>\n<script src="assets/v13.js?v=130"></script>\n</body>', 1)
+          s = s.replace('</head>', '<link rel="stylesheet" href="assets/v10-5.css?v=105">\n<link rel="stylesheet" href="assets/v10-6.css?v=10631">\n<link rel="stylesheet" href="assets/v11.css?v=111">\n<link rel="stylesheet" href="assets/v12.css?v=120">\n<link rel="stylesheet" href="assets/v13.css?v=131">\n</head>', 1)
+          s = s.replace('</body>', '<script src="assets/v10-5.js?v=1051"></script>\n<script src="assets/v10-6.js?v=10631"></script>\n<script src="assets/v10-6-datafix.js?v=10631"></script>\n<script src="assets/v11.js?v=111"></script>\n<script src="assets/v12.js?v=120"></script>\n<script src="assets/v13.js?v=131"></script>\n</body>', 1)
           p.write_text(s, encoding='utf-8')
           PY
 
