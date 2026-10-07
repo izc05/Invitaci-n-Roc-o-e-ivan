@@ -54,4 +54,4 @@ body.v105 footer{min-height:105svh!important}.v105 footer::before{inset:-10%!imp
   .v105-cats{min-height:195svh}.v105-cats__copy{width:calc(100% - 30px)}
   body.v105 .event-img{height:300px!important}
 }
-@media(prefers-reduced-motion:reduce){.v105-prelude__mark{animation:none}.v105-moment__photo,.v105-cats__photo,body.v105 .story .chapter-photo .bg,body.v105 .hero-bg{transform:scale(1.08)!important}}
+@media(prefers-reduced-motion:reduce){.v105-prelude__mark{animation:none}.v105-moment__photo,.v105-cats__photo,body.v105 .story .chapter-photo .bg{transform:scale(1.08)!important}}
