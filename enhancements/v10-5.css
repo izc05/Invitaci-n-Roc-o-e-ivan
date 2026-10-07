@@ -10,7 +10,7 @@ body.v105 .cursor,body.v105 .nib{display:none!important}
 
 /* Hero con más recorrido */
 body.v105 .hero{min-height:118svh!important;padding-bottom:10svh!important}
-body.v105 .hero-bg{inset:-12%!important;transform:translate3d(0,0,0) scale(1.17)!important;will-change:transform;transition:none!important}
+body.v105 .hero-bg{inset:-12%!important;will-change:transform;transition:none!important}
 body.v105 .hero-card{transition:opacity .18s linear,transform .18s linear}
 
 /* Los capítulos originales pasan a storytelling sticky */
