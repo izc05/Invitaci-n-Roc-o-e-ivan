@@ -52,11 +52,66 @@ footer{min-height:62svh;position:relative;display:grid;place-items:center;text-a
 @media(max-width:820px){.chapter-grid,.chapter:nth-child(even) .chapter-grid{grid-template-columns:1fr}.chapter:nth-child(even) .chapter-photo{order:0}.events{grid-template-columns:1fr}}
 @media(max-width:680px){.nav{display:none}.music{right:10px;bottom:max(11px,env(safe-area-inset-bottom));width:45px;height:45px}.hero{min-height:780px}.hero-bg{background-position:52% center}.hero-card{width:95vw;padding:20px 14px}.hero-title{font-size:clamp(58px,18vw,90px)}.section{padding:74px 14px}.chapter{min-height:auto;padding:32px 0}.chapter-photo{min-height:410px;border-radius:190px 190px 22px 22px}.chapter-copy{padding:2px 4px}.type-paragraph{font-size:15px;line-height:1.8;min-height:130px}.emotion{padding:82px 14px}.event-img{height:270px}.row2{grid-template-columns:1fr}.sheet{padding:24px 16px;min-height:400px}.sheet-inner{min-height:345px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+
+/* EXPERIMENTO: libro pop-up 3D. Implementación propia inspirada en una base MIT. */
+.popup-opening{padding:0;overflow:hidden;background:radial-gradient(circle at 50% 34%,#fffdf9 0,#f4ece1 45%,#dfd0bf 100%);isolation:isolate}
+.popup-opening:before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 20% 20%,rgba(190,153,107,.18),transparent 18%),radial-gradient(circle at 80% 74%,rgba(137,94,89,.13),transparent 22%);filter:blur(28px)}
+.popup-intro{position:relative;z-index:2;width:100%;min-height:100svh;display:grid;grid-template-rows:auto 1fr auto auto;place-items:center;padding:26px 12px 24px}
+.popup-kicker{font:700 9px/1 Arial,sans-serif;letter-spacing:.27em;text-transform:uppercase;color:#806e5c;align-self:start}
+.popup-copy{font:italic 15px/1.5 Georgia,serif;color:#716257;text-align:center;margin:2px 0 4px;transition:.35s}
+.skip-intro{position:absolute;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:9;border:1px solid rgba(66,52,42,.13);border-radius:999px;background:rgba(255,250,244,.74);backdrop-filter:blur(9px);padding:9px 12px;color:#71645a;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.book-stage{position:relative;width:min(96vw,760px);height:clamp(350px,64vw,540px);perspective:1500px;perspective-origin:50% 38%;display:grid;place-items:center}
+.storybook{position:relative;width:min(88vw,680px);height:min(58vw,430px);min-height:320px;transform-style:preserve-3d;transform:rotateX(8deg) rotateZ(-1.5deg);transition:1.4s cubic-bezier(.2,.78,.18,1)}
+.book-spread{position:absolute;inset:8% 3%;display:grid;grid-template-columns:1fr 1fr;transform-style:preserve-3d;opacity:.05;transform:scale(.58) rotateX(14deg);transition:transform 1.05s cubic-bezier(.18,.82,.2,1),opacity .7s;filter:drop-shadow(0 25px 24px rgba(68,48,34,.18))}
+.page{position:relative;background:linear-gradient(135deg,#fffaf2,#eee1d0);border:1px solid rgba(124,98,70,.16);box-shadow:inset 0 0 36px rgba(143,113,81,.08);overflow:hidden}
+.page-left{border-radius:20px 5px 5px 20px;transform-origin:right;transform:rotateY(5deg)}.page-right{border-radius:5px 20px 20px 5px;transform-origin:left;transform:rotateY(-5deg)}
+.page:after{content:"";position:absolute;inset:12px;border:1px solid rgba(183,147,105,.18);border-radius:14px}
+.page-mark{position:absolute;left:50%;top:32%;transform:translate(-50%,-50%);font:400 clamp(32px,7vw,56px)/1 Georgia,serif;color:#b09166;white-space:nowrap}.page-mark i{color:#946b64}
+.page-quote{position:absolute;left:12%;right:12%;bottom:17%;text-align:center;font:italic clamp(11px,1.8vw,15px)/1.55 Georgia,serif;color:#75695f}
+.front-cover{position:absolute;left:50%;top:50%;width:min(46%,310px);aspect-ratio:.72;transform-origin:0 50%;transform:translate(-50%,-50%) rotateY(-7deg) rotateX(2deg);transform-style:preserve-3d;z-index:30;border-radius:8px 18px 18px 8px;background:radial-gradient(circle at 18% 14%,rgba(255,255,255,.85),transparent 22%),linear-gradient(145deg,#fffaf1,#efe3d4 55%,#e1d1bd);border:1px solid rgba(151,117,78,.28);box-shadow:0 26px 54px rgba(72,53,39,.22),inset -14px 0 24px rgba(130,100,65,.08);transition:transform 1.35s cubic-bezier(.2,.78,.18,1),box-shadow 1s,opacity .7s}
+.front-cover:after{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:linear-gradient(90deg,rgba(96,74,54,.14),rgba(255,255,255,.12));border-radius:8px 0 0 8px}
+.cover-line{position:absolute;inset:15px;border:1px solid rgba(171,137,95,.35);border-radius:7px 14px 14px 7px}.cover-star{position:absolute;top:12%;left:50%;transform:translateX(-50%);color:#b99b70}
+.cover-copy{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:20px;color:#55463b}.cover-copy small{font:700 8px/1 Arial,sans-serif;letter-spacing:.31em;text-transform:uppercase;color:#8b755b;margin-bottom:15px}.cover-copy strong{display:block;font:400 clamp(32px,7vw,57px)/.96 Georgia,serif;letter-spacing:-.045em}.cover-copy strong i{display:block;color:#a98270;font-weight:400;margin:3px 0}.cover-copy span{margin-top:18px;font:400 10px/1 Georgia,serif;letter-spacing:.25em;color:#8d7659}
+.popup-piece{position:absolute;left:50%;bottom:45%;transform-origin:50% 100%;opacity:0;pointer-events:none}
+.popup-scenery{width:65%;height:46%;margin-left:-32.5%;border-radius:160px 160px 12px 12px;background:linear-gradient(180deg,#eadbc7,#fbf5ec);border:1px solid rgba(173,138,96,.30);transform:rotateX(-89deg) scale(.82);transition:1s .62s cubic-bezier(.18,.88,.2,1)}
+.popup-scenery:before,.popup-scenery:after{content:"";position:absolute;bottom:0;width:33%;height:68%;border:1px solid rgba(166,132,92,.24);border-radius:90px 90px 0 0;background:rgba(250,243,232,.78)}.popup-scenery:before{left:-16%;transform:rotate(-6deg)}.popup-scenery:after{right:-16%;transform:rotate(6deg)}
+.popup-arch{width:47%;height:50%;margin-left:-23.5%;border:2px solid rgba(184,145,95,.68);border-bottom:0;border-radius:180px 180px 18px 18px;box-shadow:inset 0 0 0 7px rgba(255,250,242,.5);transform:rotateX(-89deg) scale(.74);transition:1.05s .85s cubic-bezier(.18,.9,.2,1)}.popup-arch span{position:absolute;top:9%;left:50%;transform:translateX(-50%);font:400 16px Georgia,serif;color:#9b774f;letter-spacing:.2em}
+.popup-photo{width:31%;height:54%;margin-left:-15.5%;overflow:hidden;border-radius:120px 120px 18px 18px;border:5px solid #fff8ee;box-shadow:0 18px 38px rgba(64,45,31,.23),0 0 0 1px rgba(176,139,94,.24);transform:rotateX(-89deg) translateY(12px) scale(.62);transition:1.05s 1.05s cubic-bezier(.14,.9,.18,1)}.popup-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 48%;filter:saturate(.83) contrast(.97) brightness(1.03)}
+.bloom{width:22%;height:25%;background:radial-gradient(circle at 25% 65%,#f1dfd7 0 7%,transparent 8%),radial-gradient(circle at 50% 38%,#fff9f1 0 9%,transparent 10%),radial-gradient(circle at 76% 64%,#dec7b6 0 7%,transparent 8%),radial-gradient(ellipse at 50% 82%,rgba(104,121,101,.6) 0 13%,transparent 14%);transform:rotateX(-89deg) scale(.55);transition:.9s 1.23s cubic-bezier(.16,.9,.2,1)}.bloom-left{margin-left:-40%;transform-origin:80% 100%}.bloom-right{margin-left:18%;transform-origin:20% 100%}
+.popup-caption{bottom:16%;width:64%;margin-left:-32%;text-align:center;font:italic clamp(11px,2vw,15px)/1.4 Georgia,serif;color:#6c5b4d;transform:translateY(18px) scale(.92);transition:.7s 1.42s}
+.storybook.open{transform:rotateX(4deg) rotateZ(0)}.storybook.open .book-spread{opacity:1;transform:scale(1) rotateX(5deg)}.storybook.open .front-cover{transform:translate(-104%,-50%) rotateY(-154deg) rotateX(4deg);box-shadow:-24px 22px 46px rgba(72,53,39,.16)}.storybook.open .popup-piece{opacity:1;transform:rotateX(0) translateY(0) scale(1)}
+.popup-intro.started .popup-copy,.popup-intro.started .popup-enter{opacity:0;pointer-events:none}.popup-enter{margin:8px auto 0;min-width:176px}
+.popup-intro.exit .storybook{transform:scale(1.42) translateY(3vh);opacity:0;transition:transform 1.05s cubic-bezier(.22,.8,.24,1),opacity .8s .14s}.popup-intro.exit .popup-kicker,.popup-intro.exit .skip-intro{opacity:0;transition:.35s}
+.hero-bg.hero-cinematic-enter{animation:heroCinematicZoom 1.9s cubic-bezier(.16,.82,.24,1) both}@keyframes heroCinematicZoom{0%{transform:scale(1.22);filter:saturate(.67) brightness(.92) blur(3px)}100%{transform:scale(1.06);filter:saturate(.73) brightness(1.04) blur(0)}}
+@media(max-width:680px){.book-stage{width:100vw;height:60svh;min-height:390px}.storybook{width:96vw;height:62vw;min-height:300px}.front-cover{width:47%}.cover-copy strong{font-size:clamp(29px,10vw,47px)}.popup-photo{width:34%;height:56%;margin-left:-17%}.popup-arch{width:51%;margin-left:-25.5%}.popup-scenery{width:72%;margin-left:-36%}.popup-caption{width:76%;margin-left:-38%;bottom:13%}}
+@media(max-width:430px){.book-stage{height:56svh}.storybook{height:70vw}.page-quote{display:none}}
+@media(prefers-reduced-motion:reduce){.storybook,.book-spread,.front-cover,.popup-piece,.popup-intro.exit .storybook{transition:none!important}.hero-bg.hero-cinematic-enter{animation:none!important}}
+
 </style>
 </head>
 <body>
 <div id="progress"></div>
-<div class="opening" id="opening"><div class="sheet"><div class="sheet-inner"><div class="sheet-line"></div><div class="sheet-title" id="openTitle"></div><div class="sheet-copy" id="openCopy"></div><button class="enter" id="enterBtn">Abrir invitación</button></div></div></div>
+<div class="opening popup-opening" id="opening">
+<div class="popup-intro" id="popupIntro">
+<button class="skip-intro" id="skipIntro" type="button">Saltar</button>
+<div class="popup-kicker">Iván &amp; Rocío · 27.02.2027</div>
+<div class="book-stage" aria-hidden="true">
+<div class="storybook" id="storybook">
+<div class="book-spread">
+<div class="page page-left"><div class="page-mark">I <i>&amp;</i> R</div><div class="page-quote">Hay historias que merecen abrirse despacio.</div></div>
+<div class="page page-right"></div>
+<div class="popup-piece popup-scenery"></div>
+<div class="popup-piece popup-arch"><span>I&amp;R</span></div>
+<div class="popup-piece popup-photo"><img src="assets/experiments/preboda-127-intro.webp" alt=""></div>
+<div class="popup-piece bloom bloom-left"></div>
+<div class="popup-piece bloom bloom-right"></div>
+<div class="popup-piece popup-caption">Nuestra historia comienza aquí</div>
+</div>
+<div class="front-cover"><div class="cover-line"></div><div class="cover-star">✦</div><div class="cover-copy"><small>Nuestra boda</small><strong>Iván <i>&amp;</i> Rocío</strong><span>27 · 02 · 2027</span></div></div>
+</div></div>
+<div class="popup-copy">Una historia está a punto de abrirse…</div>
+<button class="enter ready popup-enter" id="enterBtn" type="button">Abrir invitación</button>
+</div></div>
 <nav class="nav"><a href="#historia">Historia</a><a href="#dia">El gran día</a><a href="#itinerario">Horario</a><a href="#rsvp">Confirmar</a></nav>
 <button class="music" id="musicBtn" aria-label="Activar o pausar música">♫</button><audio id="music" loop preload="auto"><source src="assets/audio/music.mp3" type="audio/mpeg"></audio>
 <header class="hero"><div class="hero-bg" id="heroBg"></div><div class="hero-card"><div class="hero-k">Nos casamos</div><h1 class="hero-title">Iván y Rocío</h1><div class="hero-date">27 . 02 . 2027</div><div class="hero-type" id="heroType"></div><div class="hero-actions"><a class="btn primary" href="#historia">Seguir leyendo</a><a class="btn secondary" href="#rsvp">Confirmar asistencia</a></div></div></header>
@@ -90,8 +145,13 @@ function fadeMusicTo(target=.62,duration=2200){
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&!music.paused){music.pause();musicBtn.classList.remove('on');musicBtn.textContent='♫';}});
 music.addEventListener('error',()=>{musicBtn.hidden=true;musicBtn.setAttribute('aria-hidden','true');});
-document.getElementById('openTitle').innerHTML='Iván y Rocío';document.getElementById('openCopy').innerHTML='27 . 02 . 2027';document.getElementById('enterBtn').textContent='Abrir invitación';document.getElementById('enterBtn').classList.add('ready');
-document.getElementById('enterBtn').onclick=async()=>{const btn=document.getElementById('enterBtn');btn.disabled=true;btn.textContent='Abriendo…';try{music.currentTime=0;music.volume=0;await music.play();fadeMusicTo(.62,2400);musicBtn.classList.add('on');musicBtn.textContent='♪';}catch(e){}document.getElementById('openTitle').innerHTML='';document.getElementById('openCopy').innerHTML='';await typeInto(document.getElementById('openTitle'),'Iván y Rocío',62);document.getElementById('openTitle').innerHTML+='<span class="cursor"></span>';await sleep(260);document.getElementById('openTitle').querySelector('.cursor')?.remove();await typeInto(document.getElementById('openCopy'),'27 . 02 . 2027',30);await sleep(300);document.getElementById('opening').classList.add('hide');petals(16);};
+
+
+const opening=document.getElementById('opening'),popupIntro=document.getElementById('popupIntro'),storybook=document.getElementById('storybook'),enterBtn=document.getElementById('enterBtn'),skipIntro=document.getElementById('skipIntro'),heroBg=document.getElementById('heroBg');
+let introFinished=false,introTimer=0;
+function finishBookIntro(immediate=false){if(introFinished)return;introFinished=true;clearTimeout(introTimer);if(!immediate&&!reduce){popupIntro.classList.add('exit');heroBg.classList.add('hero-cinematic-enter');setTimeout(()=>opening.classList.add('hide'),620);setTimeout(()=>heroBg.classList.remove('hero-cinematic-enter'),2050);petals(18)}else opening.classList.add('hide')}
+enterBtn.onclick=async()=>{if(enterBtn.disabled)return;enterBtn.disabled=true;enterBtn.textContent='Abriendo…';try{music.currentTime=0;music.volume=0;await music.play();fadeMusicTo(.62,2400);musicBtn.classList.add('on');musicBtn.textContent='♪'}catch(e){}if(reduce){finishBookIntro(true);return}popupIntro.classList.add('started');requestAnimationFrame(()=>storybook.classList.add('open'));introTimer=setTimeout(()=>finishBookIntro(false),3900)};
+skipIntro.onclick=()=>finishBookIntro(true);
 const io=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(!entry.isIntersecting)return;entry.target.classList.add('in');if(entry.target.classList.contains('chapter-copy')&&!entry.target.dataset.written){entry.target.dataset.written='1';const p=entry.target.querySelector('.type-paragraph');const line=entry.target.querySelector('.ink-line');const sign=entry.target.querySelector('.hand-sign');setTimeout(async()=>{await typeInto(p,p.dataset.text,24);line.classList.add('draw');setTimeout(()=>sign.classList.add('show'),700);},400);}});},{threshold:.20});document.querySelectorAll('.reveal,.chapter-copy').forEach(el=>io.observe(el));
 const emotion=document.getElementById('emotionType');let emotionDone=false;const eio=new IntersectionObserver(entries=>{if(entries[0].isIntersecting&&!emotionDone){emotionDone=true;typeInto(emotion,'¿Nos acompañas? Queremos celebrar este día rodeados de las personas que han formado parte de nuestra historia. <em>Y tú eres una de ellas.</em>',25,true);}},{threshold:.35});eio.observe(emotion);
 addEventListener('scroll',()=>{const max=document.documentElement.scrollHeight-innerHeight;document.getElementById('progress').style.width=((scrollY/max)*100)+'%';if(!reduce)document.getElementById('heroBg').style.transform=`translateY(${scrollY*.07}px) scale(1.08)`;const tl=document.getElementById('timelineList'),line=document.getElementById('timelineLine');const r=tl.getBoundingClientRect();const pct=Math.max(0,Math.min(1,(innerHeight*.72-r.top)/(r.height*.9)));line.style.height=(pct*100)+'%';},{passive:true});
