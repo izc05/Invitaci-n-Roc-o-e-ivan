@@ -80,14 +80,14 @@ body.v13 .hero::before{
   content:none!important;
 }
 body.v13 .hero-bg{
-  transform:scale(1.12) translate3d(0,0,0)!important;
-  transform-origin:center center!important;
+  transform:scale(1.12) translate3d(0,0,0);
+  transform-origin:center center;
   will-change:transform;
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
 }
 body.v13 .hero.v13-awake .hero-bg{
-  animation:v13HeroZoomOut 8.5s cubic-bezier(.16,.72,.22,1) forwards!important;
+  animation:v13HeroZoomOut 8.5s cubic-bezier(.16,.72,.22,1) forwards;
 }
 @keyframes v13HeroZoomOut{
   from{transform:scale(1.12) translate3d(0,0,0)}
