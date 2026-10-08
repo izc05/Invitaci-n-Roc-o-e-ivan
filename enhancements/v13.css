@@ -173,3 +173,96 @@ body.v13 footer p{
   body.v13 .opening::before,body.v13 .opening::after,body.v13 .hero.v13-awake::before{animation:none!important}
   body.v13 .opening .sheet{transform:none!important}
 }
+
+
+/* Hero sin oclusiones: anillo visible y tarjeta fuera de la fotografía (2026-10-08). */
+body.v13 .hero{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  align-items:center!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:0 0 30px!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#e8ddd1,#f7f1e8 75%,#fffaf4);
+}
+body.v13 .hero::after{
+  display:none!important;
+  content:none!important;
+}
+body.v13 .hero-bg{
+  position:relative!important;
+  inset:auto!important;
+  display:block!important;
+  flex:none;
+  width:100%;
+  height:min(84svh,950px);
+  background:url('images/rocio-ivan-hero.webp') center center / contain no-repeat,
+             linear-gradient(145deg,#d4c6b7,#eee5dc)!important;
+  background-position:center center!important;
+  filter:none!important;
+  transform:none!important;
+  transform-origin:center center!important;
+  will-change:transform,opacity;
+}
+body.v13 .hero-card{
+  position:relative!important;
+  z-index:3;
+  width:min(calc(100% - 28px),760px);
+  margin:20px auto 0!important;
+  padding:28px 22px!important;
+  border:1px solid rgba(85,69,50,.12);
+  border-radius:26px;
+  background:#fffaf4!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:0 16px 42px rgba(64,51,39,.11);
+}
+/* Zoom de salida contenido dentro de la zona fotográfica, sin recortar el anillo. */
+body.v13.hero-zoom-start .hero-bg{
+  animation:v13RingSafeReveal 8s ease-out .65s 1 both!important;
+}
+@keyframes v13RingSafeReveal{
+  from{opacity:.96;transform:scale(1)}
+  to{opacity:1;transform:scale(.985)}
+}
+@media(min-width:900px){
+  body.v13 .hero{
+    display:grid!important;
+    grid-template-columns:minmax(0,1.2fr) minmax(330px,.8fr);
+    align-items:center!important;
+    padding:0!important;
+    min-height:100svh!important;
+  }
+  body.v13 .hero-bg{
+    height:100svh;
+    min-height:580px;
+    background-color:#e6dcd0!important;
+  }
+  body.v13 .hero-card{
+    width:calc(100% - 48px);
+    margin:24px auto!important;
+  }
+}
+@media(max-width:680px){
+  body.v13 .hero{
+    padding-bottom:24px!important;
+  }
+  body.v13 .hero-bg{
+    height:min(76svh,760px)!important;
+    background-position:center center!important;
+    background-size:contain,cover!important;
+  }
+  body.v13 .hero-card{
+    width:calc(100% - 24px)!important;
+    margin:14px auto 0!important;
+    padding:22px 15px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  body.v13.hero-zoom-start .hero-bg{
+    animation:none!important;
+    transform:none!important;
+  }
+}
