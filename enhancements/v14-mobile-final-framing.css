@@ -1,0 +1,20 @@
+/* Ajuste puntual de encuadre (móvil, 08-10-2026).
+   ÚNICAMENTE dos imágenes señaladas en las capturas del usuario:
+   1) Última escena de la historia: rocio-ivan-story-4.webp.
+   2) Foto del cierre: rocio-ivan-final.webp.
+   Conservar las capas, las tarjetas y el parallax existentes. */
+@media (max-width:780px) {
+  /* Tercera y última foto de «Nuestra historia»:
+     encuadrar la parte derecha/inferior donde aparece la pareja. */
+  body.v105.v12 .story article.chapter:nth-of-type(3) .chapter-photo .bg {
+    background-position: 86% 68% !important;
+  }
+
+  /* Fotografía final con los nombres y la fecha:
+     deshacer el sobrezoom heredado, que cortaba ambas caras por los lados. */
+  body.v105.v12.v13 footer::before {
+    inset: 0 !important;
+    transform: translate3d(0,0,0) scale(1.025) !important;
+    background-position: center 45% !important;
+  }
+}
