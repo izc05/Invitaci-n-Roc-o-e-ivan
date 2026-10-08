@@ -71,3 +71,6 @@ body.v14-cinema-finished .hero-card{
   body.v14-cinema-finished .hero-card{animation:none!important}
   .v14-cinema{transition-duration:.25s}
 }
+
+/* Recuperación del anuncio nupcial; no afecta a fotografías ni zoom. */
+.v105-prelude .v14-marriage{display:block;margin:22px auto 0;font:400 clamp(34px,9vw,58px)/1.12 Georgia,serif;color:#405448;letter-spacing:-.035em;}
