@@ -88,7 +88,7 @@ function fadeMusicTo(target=.62,duration=2200){
   };
   musicFadeFrame=requestAnimationFrame(tick);
 }
-/* La música no se pausa en visibilitychange: fullscreen y cambios de pestaña no deben cortarla. */
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&!music.paused){music.pause();musicBtn.classList.remove('on');musicBtn.textContent='♫';}});
 music.addEventListener('error',()=>{musicBtn.hidden=true;musicBtn.setAttribute('aria-hidden','true');});
 document.getElementById('openTitle').innerHTML='Iván y Rocío';document.getElementById('openCopy').innerHTML='27 . 02 . 2027';document.getElementById('enterBtn').textContent='Abrir invitación';document.getElementById('enterBtn').classList.add('ready');
 document.getElementById('enterBtn').onclick=async()=>{const btn=document.getElementById('enterBtn');btn.disabled=true;btn.textContent='Abriendo…';try{music.currentTime=0;music.volume=0;await music.play();fadeMusicTo(.62,2400);musicBtn.classList.add('on');musicBtn.textContent='♪';}catch(e){}document.getElementById('openTitle').innerHTML='';document.getElementById('openCopy').innerHTML='';await typeInto(document.getElementById('openTitle'),'Iván y Rocío',62);document.getElementById('openTitle').innerHTML+='<span class="cursor"></span>';await sleep(260);document.getElementById('openTitle').querySelector('.cursor')?.remove();await typeInto(document.getElementById('openCopy'),'27 . 02 . 2027',30);await sleep(300);document.getElementById('opening').classList.add('hide');document.body.classList.add('hero-zoom-start');petals(16);};
