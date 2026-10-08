@@ -4,10 +4,24 @@
    2) Foto del cierre: rocio-ivan-final.webp.
    Conservar las capas, las tarjetas y el parallax existentes. */
 @media (max-width:780px) {
-  /* Tercera y última foto de «Nuestra historia»:
-     encuadrar la parte derecha/inferior donde aparece la pareja. */
+  /* Tercera escena «Ahora queremos compartirlo con vosotros».
+     La imagen de fondo conserva el parallax original; por encima se
+     muestra la foto ENTERA en una ventana superior que no pisa la tarjeta.
+     Se evita perder a la pareja por el recorte del zoom en móvil. */
   body.v105.v12 .story article.chapter:nth-of-type(3) .chapter-photo .bg {
-    background-position: 86% 68% !important;
+    background-position: center 48% !important;
+  }
+  body.v105.v12 .story article.chapter:nth-of-type(3) .chapter-photo::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    bottom: 48%;
+    left: 0;
+    pointer-events: none;
+    background: url('images/rocio-ivan-story-4.webp') center center / contain no-repeat;
+    filter: brightness(.98);
   }
 
   /* Fotografía final con los nombres y la fecha:
