@@ -82,6 +82,10 @@
     window.scrollTo(0,0);
     opening.classList.add('hide');
 
+    /* Activar la música dentro del gesto real y antes de pedir fullscreen:
+       algunos navegadores consumen la autorización al entrar en pantalla completa. */
+    const audio=document.getElementById('music');
+    if(audio?.paused) document.getElementById('musicBtn')?.click();
     /* Pedir fullscreen dentro del propio click mantiene la activación de usuario.
        En navegadores que lo bloqueen, la escena usa un overlay 100dvh. */
     let fs;
@@ -92,8 +96,7 @@
         else if(root.webkitRequestFullscreen) fs=root.webkitRequestFullscreen();
       }
     }catch(_e){}
-    /* Música después de solicitar pantalla completa para no consumir el gesto. */
-    document.querySelector('.music')?.click();
+
     let settled=false;
     const proceed=async()=>{
       if(settled)return;
