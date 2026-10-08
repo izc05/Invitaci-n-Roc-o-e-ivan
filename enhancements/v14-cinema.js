@@ -80,7 +80,6 @@
     enter.disabled=true;
     enter.textContent='Abriendo…';
     window.scrollTo(0,0);
-    body.classList.add('v14-cinema-active');
     opening.classList.add('hide');
 
     /* Pedir fullscreen dentro del propio click mantiene la activación de usuario.
@@ -96,7 +95,32 @@
     /* Música después de solicitar pantalla completa para no consumir el gesto. */
     document.querySelector('.music')?.click();
     let settled=false;
-    const proceed=()=>{if(settled)return;settled=true;start()};
+    const proceed=async()=>{
+      if(settled)return;
+      settled=true;
+      const pre=document.getElementById('v105Prelude');
+      const p=document.getElementById('v105PreludeText');
+      if(pre&&p){
+        body.classList.add('v105-prelude-lock');
+        pre.classList.remove('hide');
+        pre.classList.add('show');
+        p.textContent='';
+        await new Promise(resolve=>setTimeout(resolve,900));
+        const msg='Hay historias que se escriben entre dos, pero que no serían las mismas sin quienes las acompañan.';
+        if(reduced)p.textContent=msg;
+        else for(const c of msg){p.textContent+=c;await new Promise(resolve=>setTimeout(resolve,40));}
+        const end=document.createElement('strong');
+        end.textContent='¡Nos casamos!';
+        end.className='v14-marriage';
+        p.appendChild(end);
+        await new Promise(resolve=>setTimeout(resolve,1600));
+        pre.classList.add('hide');
+        await new Promise(resolve=>setTimeout(resolve,750));
+        body.classList.remove('v105-prelude-lock');
+      }
+      body.classList.add('v14-cinema-active');
+      start();
+    };
     if(fs && typeof fs.then==='function') fs.then(proceed,proceed);
     else requestAnimationFrame(proceed);
     window.setTimeout(proceed,700);
