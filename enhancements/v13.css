@@ -81,19 +81,33 @@ body.v13 .hero::before{
 }
 body.v13 .hero-bg{
   inset:0!important;
-  transform:scale(1.16) translate3d(0,0,0);
+  transform:scale(1.18) translate3d(0,0,0);
   transform-origin:center center;
   will-change:transform;
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
 }
-/* El propio cierre de la carta dispara el zoom: sin dependencia de JS. */
-body.v13 .opening.hide ~ .hero .hero-bg{
-  animation:v13HeroZoomOut 8.8s cubic-bezier(.16,.72,.22,1) .95s both;
+/* Zoom principal: lo dispara el mismo clic de "Abrir invitación". */
+body.v13.hero-zoom-start .hero-bg{
+  animation-name:v13HeroZoomOut!important;
+  animation-duration:9s!important;
+  animation-timing-function:cubic-bezier(.16,.72,.22,1)!important;
+  animation-delay:.85s!important;
+  animation-fill-mode:both!important;
+  animation-iteration-count:1!important;
 }
 @keyframes v13HeroZoomOut{
-  from{transform:scale(1.16) translate3d(0,0,0)}
+  from{transform:scale(1.18) translate3d(0,0,0)}
   to{transform:scale(1.01) translate3d(0,0,0)}
+}
+/* Esta animación forma parte de la apertura de la invitación y debe seguir siendo visible. */
+@media(prefers-reduced-motion:reduce){
+  body.v13.hero-zoom-start .hero-bg{
+    animation-name:v13HeroZoomOut!important;
+    animation-duration:9s!important;
+    animation-delay:.85s!important;
+    animation-iteration-count:1!important;
+  }
 }
 
 /* Más legibilidad sobre fotografía sin perder el blanco elegante. */
