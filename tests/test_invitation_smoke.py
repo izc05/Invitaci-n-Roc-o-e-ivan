@@ -33,13 +33,17 @@ checks = {
     "FormSubmit destino correcto": "https://formsubmit.co/ajax/ivanrocio2027@gmail.com" in rsvp,
     "enviar de verdad antes de agradecer": rsvp.index("const response=await fetch(") < rsvp.index("$('#v12RsvpForm').style.display='none';"),
     "comprobación de respuesta del servidor": "result.success!==true&&result.success!=='true'" in rsvp and "!response.ok" in rsvp,
-    "sin falsa confirmación ante error": "catch(_error)" in rsvp and "No hemos podido enviar tu confirmación" in rsvp,
+    "sin falsa confirmación ante error": "catch(_error)" in rsvp and "result.success!==true&&result.success!=='true'" in rsvp,
+    "leer causa devuelta por FormSubmit": "typeof result?.message==='string'?result.message:''" in rsvp,
+    "explicar activación pendiente": "activat|verif|confirm" in rsvp and "ESTA RESPUESTA NO SE HA ENVIADO" in rsvp,
+    "control explícito de espera agotada": "_error?.name==='AbortError'" in rsvp and "evitar duplicados" in rsvp,
+    "no incluir datos personales en avisos técnicos": "console.warn('FormSubmit: confirmación no completada:',reason)" in rsvp,
     "evitar envíos duplicados": "if(submitting)return;" in rsvp and "submit.disabled=true;" in rsvp,
     "datos de asistencia y acompañantes": "'Asistencia':" in rsvp and "'Acompañantes':" in rsvp and "'Autobús':" in rsvp,
     "consentimiento si hay información alimentaria": "if(foodInfo&&!consent?.checked)" in rsvp and "id=\"v12FoodConsent\"" in rsvp,
     "no publicar datos personales": "ivanrocio2027@gmail.com" in rsvp and "v12-privacy-note" in rsvp_css,
     "protección spam sin captchas visibles": "_captcha:'false'" in rsvp and "_honey:" in rsvp,
-    "refresco de caché del cuestionario": "assets/v12.css?v=121" in workflow and "assets/v12.js?v=121" in workflow,
+    "refresco de caché del cuestionario": "assets/v12.css?v=121" in workflow and "assets/v12.js?v=122" in workflow,
 }
 for label, passed in checks.items():
     print(("OK   " if passed else "FAIL ")+label)
