@@ -107,7 +107,7 @@
       <div class="v12-field v12-food-consent" id="v12FoodConsentWrap" hidden>
         <label class="v12-privacy-check"><input id="v12FoodConsent" type="checkbox"> Autorizo expresamente a Iván y Rocío a tratar la información alimentaria que he incluido para organizar el menú de la boda.</label>
       </div>
-      <p class="v12-privacy-note">Iván y Rocío usarán estas respuestas únicamente para organizar la boda. Se enviarán mediante FormSubmit a su correo y no se publicarán en esta web. Para solicitar su corrección o eliminación, escribe a <a href="mailto:ivanrocio2027@gmail.com">ivanrocio2027@gmail.com</a>.</p>
+      <p class="v12-privacy-note">Iván y Rocío usarán estas respuestas únicamente para organizar la boda. Se enviarán mediante Web3Forms a su correo y no se publicarán en esta web. Para solicitar su corrección o eliminación, escribe a <a href="mailto:ivanrocio2027@gmail.com">ivanrocio2027@gmail.com</a>.</p>
       <input class="v12-honey" type="text" id="v12Honey" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="v12-send-status" id="v12SendStatus" role="status" aria-live="polite" hidden></div>
       <button class="v12-submit" type="button" id="v12Submit">Enviar confirmación ♡</button>
@@ -139,6 +139,8 @@
     }
     $('#v12AddCompanion')?.addEventListener('click',addCompanion);
 
+    /* La clave pública se obtiene gratis en web3forms.com y llega al correo de los novios. */
+    const web3formsAccessKey='PENDIENTE_CLAVE_WEB3FORMS';
     const submit=$('#v12Submit');
     const status=$('#v12SendStatus');
     const food=$('#v12Food');
@@ -183,10 +185,9 @@
       }
 
       const payload={
-        _subject:'Boda Iván y Rocío — '+(attending?'ASISTE':'NO ASISTE')+' — '+name.slice(0,70),
-        _template:'table',
-        _captcha:'false',
-        _honey:$('#v12Honey')?.value||'',
+        access_key:web3formsAccessKey,
+        subject:'Boda Iván y Rocío — '+(attending?'ASISTE':'NO ASISTE')+' — '+name.slice(0,70),
+        from_name:'Confirmaciones · Boda Iván y Rocío',
         'Nombre y apellidos':name,
         'Asistencia':attending?'Sí':'No',
         'Acompañantes':attending?(companions.length?companions.join(' | '):'Sin acompañantes'):'No procede',
@@ -195,18 +196,23 @@
         'Tipo de respuesta':correction?'CORRECCIÓN de respuesta anterior':'Primera respuesta'
       };
 
-      /* POST HTML nativo: sin AJAX, CORS, preflight ni temporizador.
-         El servicio informa si falta activación; al aceptar redirige a
-         nuestra página de agradecimiento por medio de _next. */
+      /* El formulario no saldrá a producción hasta configurar la clave pública
+         que Web3Forms envía al correo receptor. */
+      if(web3formsAccessKey==='PENDIENTE_CLAVE_WEB3FORMS'){
+        showStatus('El servicio de confirmaciones todavía no está activado. Avísanos para finalizar la configuración.',true);
+        return;
+      }
+      if($('#v12Honey')?.value){return;}
+      /* POST HTML nativo al proveedor gratuito, sin AJAX ni esperas JS.
+         El proveedor redirige a la página de gracias si acepta el envío. */
       submitting=true;
       submit.disabled=true;
       submit.textContent='Enviando…';
       showStatus('Abriendo el servicio de confirmaciones…');
       try{
-        payload._next='https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/gracias.html';
-        payload._url='https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/';
+        payload.redirect='https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/gracias.html';
         const postForm=document.createElement('form');
-        postForm.action='https://formsubmit.co/ivanrocio2027@gmail.com';
+        postForm.action='https://api.web3forms.com/submit';
         postForm.method='POST';
         postForm.style.display='none';
         for(const [key,value] of Object.entries(payload)){
