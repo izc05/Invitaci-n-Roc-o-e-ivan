@@ -1,37 +1,41 @@
-# Confirmaciones por correo — Iván y Rocío
+# Confirmaciones por correo · Iván y Rocío
 
-## Envío con un solo botón y sin AJAX
+## Integración Web3Forms
 
-La invitación sigue publicada en GitHub Pages. El cuestionario envía las respuestas a **ivanrocio2027@gmail.com** mediante **POST HTML nativo** a **https://formsubmit.co/ivanrocio2027@gmail.com** (sin abrir Gmail ni depender de CORS/AJAX/JavaScript para contactar con el servicio). Tras aceptar el formulario, FormSubmit puede redirigir al invitado a nuestra página **/gracias.html** mediante el campo documentado `_next`.
+**Proveedor:** https://web3forms.com/ — plan gratuito con 250 envíos mensuales según sus tarifas.  
+**Destinatario previsto:** ivanrocio2027@gmail.com, vinculado a la Access Key pública configurada en el formulario. La correspondencia entre clave y buzón solo puede confirmarse comprobando un correo de prueba real.  
+**Web:** https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/
 
-La antigua versión utilizaba `fetch('https://formsubmit.co/ajax/...')` con un temporizador de 20 segundos. En pruebas manuales del usuario esa petición quedaba esperando y acababa en error. El POST HTML nativo permite que **FormSubmit muestre directamente un error o el aviso de activación** en el navegador, sin ocultarlo detrás de un error genérico. **Es distinto del envío AJAX: al pulsar Enviar, el navegador sale momentáneamente de la invitación y, si FormSubmit acepta la respuesta, vuelve a una página de agradecimiento propia.**
+El cuestionario mantiene las opciones de asistencia, acompañantes, autobús y observaciones alimentarias (opcionales y sujetas a autorización expresa). Tras validar los campos, crea un formulario HTML oculto con los datos y realiza un `POST` nativo a `https://api.web3forms.com/submit` con el parámetro `access_key`. La clave de acceso es **pública** por diseño; no es una contraseña de Gmail ni un token administrativo.
 
-No inventamos confirmación de entrega desde JavaScript: la redirección a /gracias.html está configurada como respuesta del servidor, y la llegada al buzón se comprueba aparte. Si falla el servicio, la pantalla mostrará el error del servicio, no una confirmación falsa. **FormSubmit sigue siendo un proveedor externo: cambiar a POST nativo no garantiza que no tenga caídas ni problemas antispam.**
+Se utiliza el campo `redirect` con el enlace absoluto a `/gracias.html` para que Web3Forms redirija tras aceptar el formulario. No hay falso éxito anticipado en JavaScript, ni dependencia del AJAX que se bloqueaba con FormSubmit. El servicio sigue siendo externo y puede fallar por disponibilidad o filtros antispam.
 
-## Activación imprescindible antes de compartir por WhatsApp
+**Clave configurada en la PR**, sin incluir su valor en este documento.
 
-1. Abrir **https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/** en navegador normal.
-2. Rellenar una confirmación de prueba sin datos sanitarios (por ejemplo, nombre «PRUEBA ACTIVACIÓN», asistencia «No»), y pulsar **Enviar confirmación** **solo una vez**.
-3. El navegador irá al servicio FormSubmit: si aparece «This form needs Activation», abrir el buzón **ivanrocio2027@gmail.com** y localizar el correo de activación (comprobar también Spam y Promociones). Hacer clic en «Activate Form». No compartir el enlace ni subirlo a GitHub.
-4. Una vez activado, hacer **una segunda prueba con otro nombre** y comprobar que se muestra /gracias.html y que el correo con las respuestas llega a Gmail.
-5. Repetir una prueba «Sí» incluyendo un acompañante y autobús, **sin añadir información sanitaria real**.
-6. Solo después de comprobar el correo real, distribuir el enlace por WhatsApp.
+## Verificación obligatoria antes de compartir por WhatsApp
 
-**Si la navegación se queda bloqueada o falla**, consultar si FormSubmit está operativo, probar el enlace en Chrome/Edge sin bloqueadores y revisar Spam. Si persiste, usar un proveedor alternativo (por ejemplo, Google Forms o Google Apps Script). No bombardear con reintentos: pueden generar respuestas duplicadas.
+1. Abrir la invitación publicada y confirmar que el nuevo despliegue ha terminado correctamente.
+2. Rellenar una prueba con el nombre `PRUEBA WEB3FORMS`, asistencia **No**, sin datos sanitarios, y pulsar **Enviar confirmación** una sola vez.
+3. Comprobar que Web3Forms acepta la respuesta y redirige a nuestra página `gracias.html`. Si muestra una página de error, conservar captura sin datos personales y detenerse.
+4. Entrar en **ivanrocio2027@gmail.com** y comprobar que llega el correo con el nombre y la asistencia. Revisar Spam y Promociones si tarda.
+5. Hacer una segunda prueba asistiendo con acompañante y autobús, sin indicar alergias reales. Comprobar que el correo contiene ambos campos.
+6. **No distribuir por WhatsApp** hasta confirmar recepción real en el buzón correcto.
 
-## Contenido, privacidad y correcciones
+Las pruebas automatizadas (compilación JS y comprobaciones de estructura) no verifican que el tercero haya enviado un mensaje ni garantizan la entrega. En caso de error, no enviar repetidamente la misma respuesta.
 
-Se envían los datos del formulario: nombre, asistencia, acompañantes, autobús, observaciones alimentarias opcionales y aviso de corrección. El apartado alimentario exige autorización expresa antes del envío. Los datos se transmiten al servicio de terceros FormSubmit y al correo de los novios, no a GitHub. FormSubmit indica que conserva un archivo de los envíos por 30 días. Los novios deben limitar el uso y borrar las respuestas cuando ya no sean necesarias.
+## Privacidad y comportamiento
 
-Una corrección produce **otro correo** que debe revisar la pareja; no reemplaza automáticamente al anterior. FormSubmit recomienda protección antispam; el formulario usa honeypot y se ha desactivado CAPTCHA para un solo botón, con las restricciones antispam que pueda aplicar el proveedor.
+Los datos pasan por Web3Forms y llegarán al correo designado. Evitar recoger datos de alergias que no sean necesarios para organizar el menú, facilitar rectificación y eliminarlos cuando ya no sean necesarios. Una corrección del formulario genera otro correo identificado como corrección: no elimina el anterior ni actualiza una base de datos. El acceso a la dirección y a las respuestas debe limitarse a los novios.
+
+## Código afectado
+- `enhancements/v12.js`: formulario, validación, clave pública y POST HTML.
+- `enhancements/v12.css`: aviso de privacidad.
+- `gracias.html`: agradecimiento tras redirección del proveedor.
+- `tests/test_invitation_smoke.py`: comprobaciones que bloquean una clave sin configurar.
+- `.github/workflows/pages.yml`: caché y compilación del sitio.
 
 ## Referencias
-- https://formsubmit.co/documentation — formulario POST, `_next`, `_url`, `_subject`, `_honey` y `_captcha`.
-- https://formsubmit.co/help — activación y recepción.
-
-## Archivos
-- `enhancements/v12.js`: cuestionario, validación y POST HTML.
-- `enhancements/v12.css`: aviso de privacidad y mensajes.
-- `gracias.html`: agradecimiento después de la redirección del servidor.
-- `.github/workflows/pages.yml`: despliegue de página e invalidación de caché.
-- `tests/test_invitation_smoke.py`: comprobaciones de regresión.
+- https://docs.web3forms.com/getting-started/installation
+- https://docs.web3forms.com/getting-started/customizations/redirection
+- https://docs.web3forms.com/getting-started/api-reference
+- https://web3forms.com/pricing
