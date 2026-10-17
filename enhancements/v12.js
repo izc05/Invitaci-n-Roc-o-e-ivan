@@ -97,16 +97,22 @@
   if(shell){
     shell.innerHTML=`<div class="v12-rsvp" id="v12RsvpForm">
       <div class="v12-rsvp__head"><small>Confirmación</small><h3>¿Nos acompañas?</h3><p>Queremos preparar cada detalle pensando en vosotr@s</p></div>
-      <div class="v12-field"><label>Nombre y apellidos <span class="v12-required">*</span></label><input class="v12-input" id="v12Name" autocomplete="name" placeholder="Tu nombre y apellidos"></div>
+      <div class="v12-field"><label>Nombre y apellidos <span class="v12-required">*</span></label><input class="v12-input" id="v12Name" autocomplete="name" maxlength="120" placeholder="Tu nombre y apellidos"></div>
       <div class="v12-field" data-v12-q="attendance"><div>¿Confirmas tu asistencia? <span class="v12-required">*</span></div><div class="v12-choice two"><button type="button" data-value="Sí">Sí, allí estaré ♡</button><button type="button" data-value="No">No podré asistir</button></div></div>
       <div class="v12-field" data-v12-q="companion"><div>¿Vienes acompañado/a? <span class="v12-required">*</span></div><div class="v12-choice two"><button type="button" data-value="Sí">Sí</button><button type="button" data-value="No">No</button></div>
         <div class="v12-companions" id="v12Companions"><div id="v12CompanionRows"></div><button class="v12-add-companion" id="v12AddCompanion" type="button">+ Añadir otro acompañante</button></div>
       </div>
       <div class="v12-field" data-v12-q="bus"><div>¿Necesitas autobús? <span class="v12-required">*</span></div><div class="v12-choice"><button type="button" data-value="Sí, desde El Molar">Sí, desde El Molar 🚌</button><button type="button" data-value="Sí, desde San Agustín de Guadalix">Sí, desde San Agustín de Guadalix 🚌</button><button type="button" data-value="No">No</button></div></div>
-      <div class="v12-field"><label>Alergias, intolerancias o preferencias alimentarias</label><textarea class="v12-textarea" id="v12Food" placeholder="Cuéntanos cualquier detalle que debamos tener en cuenta"></textarea></div>
+      <div class="v12-field"><label>Alergias, intolerancias o preferencias alimentarias (opcional)</label><textarea class="v12-textarea" id="v12Food" maxlength="500" placeholder="Solo lo imprescindible para organizar el menú"></textarea></div>
+      <div class="v12-field v12-food-consent" id="v12FoodConsentWrap" hidden>
+        <label class="v12-privacy-check"><input id="v12FoodConsent" type="checkbox"> Autorizo expresamente a Iván y Rocío a tratar la información alimentaria que he incluido para organizar el menú de la boda.</label>
+      </div>
+      <p class="v12-privacy-note">Iván y Rocío usarán estas respuestas únicamente para organizar la boda. Se enviarán mediante FormSubmit a su correo y no se publicarán en esta web. Para solicitar su corrección o eliminación, escribe a <a href="mailto:ivanrocio2027@gmail.com">ivanrocio2027@gmail.com</a>.</p>
+      <input class="v12-honey" type="text" id="v12Honey" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="v12-send-status" id="v12SendStatus" role="status" aria-live="polite" hidden></div>
       <button class="v12-submit" type="button" id="v12Submit">Enviar confirmación ♡</button>
     </div>
-    <div class="v12-result" id="v12Result"><h3 id="v12Thanks">Gracias ♡</h3><p id="v12ThanksCopy"></p><button class="v12-back" type="button" id="v12Back">Modificar respuesta</button></div>`;
+    <div class="v12-result" id="v12Result"><h3 id="v12Thanks">Gracias ♡</h3><p id="v12ThanksCopy"></p><button class="v12-back" type="button" id="v12Back">Enviar una corrección</button></div>`;
 
     const state={attendance:'',companion:'',bus:''};
     $$('[data-v12-q]').forEach(group=>group.querySelectorAll('.v12-choice button').forEach(btn=>btn.addEventListener('click',()=>{
@@ -125,7 +131,7 @@
     function addCompanion(){
       const rows=$('#v12CompanionRows'); if(!rows)return;
       const n=rows.children.length+1, row=document.createElement('div'); row.className='v12-companion-row';
-      row.innerHTML=`<label>Acompañante ${n}<input class="v12-input v12-companion-name" placeholder="Nombre y apellidos"></label><button class="v12-remove-companion" type="button" aria-label="Quitar acompañante">Quitar</button>`;
+      row.innerHTML=`<label>Acompañante ${n}<input class="v12-input v12-companion-name" maxlength="120" placeholder="Nombre y apellidos"></label><button class="v12-remove-companion" type="button" aria-label="Quitar acompañante">Quitar</button>`;
       row.querySelector('.v12-remove-companion').addEventListener('click',()=>{row.remove();renumberCompanions();}); rows.appendChild(row);
     }
     function renumberCompanions(){
@@ -133,21 +139,103 @@
     }
     $('#v12AddCompanion')?.addEventListener('click',addCompanion);
 
-    $('#v12Submit')?.addEventListener('click',()=>{
-      const name=$('#v12Name')?.value.trim();
-      if(!name){$('#v12Name')?.focus();return;}
-      if(!state.attendance){return;}
-      if(state.attendance==='Sí'&&!state.companion){return;}
-      if(state.attendance==='Sí'&&!state.bus){return;}
-      if(state.companion==='Sí'){
-        const names=$$('.v12-companion-name').map(x=>x.value.trim());
-        if(!names.length||names.some(x=>!x)){const empty=$$('.v12-companion-name').find(x=>!x.value.trim());empty?.focus();return;}
+    const submit=$('#v12Submit');
+    const status=$('#v12SendStatus');
+    const food=$('#v12Food');
+    const consentWrap=$('#v12FoodConsentWrap');
+    const consent=$('#v12FoodConsent');
+    let submitting=false,correction=false;
+    const showStatus=(message,isError=false)=>{
+      if(!status)return;
+      status.hidden=!message;
+      status.textContent=message;
+      status.classList.toggle('error',isError);
+    };
+    const updateFoodConsent=()=>{
+      if(!consentWrap)return;
+      const required=state.attendance==='Sí'&&!!food?.value.trim();
+      consentWrap.hidden=!required;
+      if(!required&&consent)consent.checked=false;
+    };
+    food?.addEventListener('input',updateFoodConsent);
+    $$('[data-v12-q="attendance"] button').forEach(btn=>btn.addEventListener('click',updateFoodConsent));
+
+    submit?.addEventListener('click',async()=>{
+      if(submitting)return;
+      showStatus('');
+      const name=$('#v12Name')?.value.trim()||'';
+      const attending=state.attendance==='Sí';
+      if(!name){showStatus('Indica tu nombre y apellidos.',true);$('#v12Name')?.focus();return;}
+      if(!state.attendance){showStatus('Selecciona si asistirás a la boda.',true);return;}
+      if(attending&&!state.companion){showStatus('Indica si vendrás acompañado/a.',true);return;}
+      if(attending&&!state.bus){showStatus('Selecciona si necesitarás autobús.',true);return;}
+      const companions=attending&&state.companion==='Sí'?$$('.v12-companion-name').map(x=>x.value.trim()):[];
+      if(attending&&state.companion==='Sí'&&(!companions.length||companions.some(x=>!x))){
+        showStatus('Completa los nombres de los acompañantes.',true);
+        $$('.v12-companion-name').find(x=>!x.value.trim())?.focus();
+        return;
       }
-      $('#v12RsvpForm').style.display='none'; $('#v12Result').classList.add('show');
-      $('#v12Thanks').textContent=`Gracias, ${name} ♡`;
-      $('#v12ThanksCopy').textContent=state.attendance==='Sí'?'Nos hace muchísima ilusión saber que compartirás este día con nosotros.':'Gracias por avisarnos. Te tendremos muy presente en un día tan especial.';
+      const foodInfo=attending?(food?.value.trim()||''):'';
+      if(foodInfo&&!consent?.checked){
+        showStatus('Marca la autorización para enviar información alimentaria.',true);
+        consent?.focus();
+        return;
+      }
+
+      const payload={
+        _subject:'Boda Iván y Rocío — '+(attending?'ASISTE':'NO ASISTE')+' — '+name.slice(0,70),
+        _template:'table',
+        _captcha:'false',
+        _honey:$('#v12Honey')?.value||'',
+        'Nombre y apellidos':name,
+        'Asistencia':attending?'Sí':'No',
+        'Acompañantes':attending?(companions.length?companions.join(' | '):'Sin acompañantes'):'No procede',
+        'Autobús':attending?state.bus:'No procede',
+        'Necesidades alimentarias':foodInfo||'No indicadas',
+        'Tipo de respuesta':correction?'CORRECCIÓN de respuesta anterior':'Primera respuesta'
+      };
+
+      submitting=true;
+      submit.disabled=true;
+      const normalLabel='Enviar confirmación ♡';
+      submit.textContent='Enviando…';
+      showStatus('Enviando la confirmación…');
+      const controller=new AbortController();
+      const timeout=window.setTimeout(()=>controller.abort(),20000);
+      try{
+        const response=await fetch('https://formsubmit.co/ajax/ivanrocio2027@gmail.com',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Accept':'application/json'},
+          body:JSON.stringify(payload),
+          signal:controller.signal
+        });
+        const result=await response.json().catch(()=>null);
+        if(!response.ok||!result||(result.success!==true&&result.success!=='true')){
+          throw new Error('FormSubmit no ha aceptado la respuesta');
+        }
+        $('#v12RsvpForm').style.display='none';
+        $('#v12Result').classList.add('show');
+        $('#v12Thanks').textContent=`Gracias, ${name} ♡`;
+        $('#v12ThanksCopy').textContent=(attending?
+          'Hemos enviado tu confirmación. ¡Nos hace mucha ilusión compartir este día contigo!':
+          'Hemos enviado tu respuesta. Gracias por avisarnos, te tendremos muy presente.')
+          ;
+        showStatus('');
+      }catch(_error){
+        showStatus('No hemos podido enviar tu confirmación. Tus respuestas siguen aquí; comprueba tu conexión e inténtalo de nuevo. Si persiste, contacta con los novios.',true);
+      }finally{
+        window.clearTimeout(timeout);
+        submitting=false;
+        submit.disabled=false;
+        submit.textContent=normalLabel;
+      }
     });
-    $('#v12Back')?.addEventListener('click',()=>{$('#v12Result').classList.remove('show');$('#v12RsvpForm').style.display='block';});
+    $('#v12Back')?.addEventListener('click',()=>{
+      correction=true;
+      $('#v12Result').classList.remove('show');
+      $('#v12RsvpForm').style.display='block';
+      showStatus('Si envías una corrección, los novios recibirán otro correo que sustituye tu respuesta anterior.');
+    });
   }
 
   const foot=$('footer');

@@ -79,3 +79,13 @@ body.v12 footer p{color:#f4ebe0!important}
   .v12-countdown{padding:82px 12px}.v12-countdown__grid{gap:7px}.v12-time{padding:15px 4px 13px;border-radius:16px}.v12-time strong{font-size:30px}.v12-time span{font-size:7px;letter-spacing:.12em}
   .v12-rsvp{padding:26px 14px}.v12-choice.two{grid-template-columns:1fr}.v12-companion-row{grid-template-columns:1fr}.v12-remove-companion{width:100%}
 }
+/* Envío de confirmaciones real: privacidad, estados y prevención de spam. */
+.v12-privacy-note{margin:18px 2px 0;font:400 12px/1.65 Arial,sans-serif;color:#6b5f55}
+.v12-privacy-note a{color:#405e4e;text-decoration:underline;overflow-wrap:anywhere}
+.v12-privacy-check{display:flex!important;align-items:flex-start;gap:10px;margin:0!important;font:400 13px/1.55 Arial,sans-serif!important;letter-spacing:normal!important;text-transform:none!important;color:#544c43!important;cursor:pointer}
+.v12-privacy-check input{width:18px;height:18px;flex:0 0 18px;margin:2px 0 0;accent-color:#667760}
+.v12-food-consent[hidden],.v12-send-status[hidden]{display:none!important}
+.v12-honey{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.v12-send-status{margin:15px 0 0;padding:12px 15px;border-radius:12px;background:#edf2ec;color:#354938;font:400 13px/1.5 Arial,sans-serif}
+.v12-send-status.error{background:#fff0e9;color:#8a3c30}
+.v12-submit:disabled{opacity:.68;cursor:wait}
