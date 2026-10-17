@@ -1,33 +1,41 @@
 # Confirmaciones por correo · Iván y Rocío
 
-## Cambio en preparación: Web3Forms (250 envíos/mes gratis)
+## Integración Web3Forms
 
-**Pendiente de activar**: FormSubmit no respondió ni al AJAX ni al POST normal (pantalla de Edge con `ERR_CONNECTION_TIMED_OUT`). Para no seguir intentando un servicio inaccesible desde el navegador, hemos preparado **Web3Forms**, que ofrece gratuitamente hasta **250 envíos mensuales** y está pensado para páginas estáticas.
+**Proveedor:** https://web3forms.com/ — plan gratuito con 250 envíos mensuales según sus tarifas.  
+**Destinatario previsto:** ivanrocio2027@gmail.com, vinculado a la Access Key pública configurada en el formulario. La correspondencia entre clave y buzón solo puede confirmarse comprobando un correo de prueba real.  
+**Web:** https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/
 
-**El cambio permanece en una PR en borrador y NO está publicado en GitHub Pages.** La web actual se mantiene intacta hasta que los novios obtengan la clave pública de Web3Forms y se pruebe un envío real.
+El cuestionario mantiene las opciones de asistencia, acompañantes, autobús y observaciones alimentarias (opcionales y sujetas a autorización expresa). Tras validar los campos, crea un formulario HTML oculto con los datos y realiza un `POST` nativo a `https://api.web3forms.com/submit` con el parámetro `access_key`. La clave de acceso es **pública** por diseño; no es una contraseña de Gmail ni un token administrativo.
 
-### Cómo activar
+Se utiliza el campo `redirect` con el enlace absoluto a `/gracias.html` para que Web3Forms redirija tras aceptar el formulario. No hay falso éxito anticipado en JavaScript, ni dependencia del AJAX que se bloqueaba con FormSubmit. El servicio sigue siendo externo y puede fallar por disponibilidad o filtros antispam.
 
-1. Acceder a https://web3forms.com/ y crear una clave de acceso gratuita para **ivanrocio2027@gmail.com**.
-2. Consultar ese Gmail (también Spam o Promociones), copiar la **Access Key** recibida. No es una contraseña de Gmail: Web3Forms documenta que esta clave sirve como identificador público para el formulario.
-3. Sustituir `PENDIENTE_CLAVE_WEB3FORMS` en `enhancements/v12.js` por la clave de acceso recibida; **no es válida ninguna clave inventada**.
-4. Revisar y fusionar PR tras pasar tests. CI se bloqueará mientras la clave esté pendiente.
-5. Desde la web publicada rellenar una respuesta ficticia sin alergias, pulsar «Enviar confirmación» una sola vez y comprobar tanto la redirección a `gracias.html` como **la llegada efectiva del correo** a Gmail.
-6. Si la recepción funciona, comprobar un caso «Sí», acompañado y con autobús, sin datos sanitarios reales, antes de distribuir la invitación por WhatsApp.
+**Clave configurada en la PR**, sin incluir su valor en este documento.
 
-### Datos y uso
-Formulario sin panel ni base de datos propia. Recoge nombre, asistencia, acompañantes, autobús y observaciones alimentarias opcionales con autorización expresa. Los datos los procesa Web3Forms y se remiten al correo indicado. La web incluye un aviso de privacidad; revisar el plazo de conservación del servicio y borrar las respuestas cuando ya no sean necesarias. No publicar datos personales en GitHub.
+## Verificación obligatoria antes de compartir por WhatsApp
 
-### Funcionamiento técnico
-- POST HTML nativo a https://api.web3forms.com/submit
-- Campo `access_key` obligatorio con clave pública recibida.
-- Campo `redirect` hacia `/gracias.html` después de aceptación.
-- El envío utiliza `POST`, por lo que los datos no se incorporan a la URL.
-- El servicio controla aceptación y posibles errores; **no se muestra «Gracias» prematuramente en JavaScript**.
-- Web3Forms tiene cuota gratuita de 250 respuestas por mes; al superarla, deja de aceptar nuevas respuestas hasta el siguiente mes.
-- La recepción real **no está demostrada** hasta que se pruebe desde navegador y Gmail.
+1. Abrir la invitación publicada y confirmar que el nuevo despliegue ha terminado correctamente.
+2. Rellenar una prueba con el nombre `PRUEBA WEB3FORMS`, asistencia **No**, sin datos sanitarios, y pulsar **Enviar confirmación** una sola vez.
+3. Comprobar que Web3Forms acepta la respuesta y redirige a nuestra página `gracias.html`. Si muestra una página de error, conservar captura sin datos personales y detenerse.
+4. Entrar en **ivanrocio2027@gmail.com** y comprobar que llega el correo con el nombre y la asistencia. Revisar Spam y Promociones si tarda.
+5. Hacer una segunda prueba asistiendo con acompañante y autobús, sin indicar alergias reales. Comprobar que el correo contiene ambos campos.
+6. **No distribuir por WhatsApp** hasta confirmar recepción real en el buzón correcto.
 
-### Documentación oficial
-- https://web3forms.com/pricing
+Las pruebas automatizadas (compilación JS y comprobaciones de estructura) no verifican que el tercero haya enviado un mensaje ni garantizan la entrega. En caso de error, no enviar repetidamente la misma respuesta.
+
+## Privacidad y comportamiento
+
+Los datos pasan por Web3Forms y llegarán al correo designado. Evitar recoger datos de alergias que no sean necesarios para organizar el menú, facilitar rectificación y eliminarlos cuando ya no sean necesarios. Una corrección del formulario genera otro correo identificado como corrección: no elimina el anterior ni actualiza una base de datos. El acceso a la dirección y a las respuestas debe limitarse a los novios.
+
+## Código afectado
+- `enhancements/v12.js`: formulario, validación, clave pública y POST HTML.
+- `enhancements/v12.css`: aviso de privacidad.
+- `gracias.html`: agradecimiento tras redirección del proveedor.
+- `tests/test_invitation_smoke.py`: comprobaciones que bloquean una clave sin configurar.
+- `.github/workflows/pages.yml`: caché y compilación del sitio.
+
+## Referencias
 - https://docs.web3forms.com/getting-started/installation
+- https://docs.web3forms.com/getting-started/customizations/redirection
 - https://docs.web3forms.com/getting-started/api-reference
+- https://web3forms.com/pricing
