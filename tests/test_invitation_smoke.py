@@ -15,6 +15,7 @@ checks = {
     "frase introductoria original": "Tenemos algo que contaros" in v105,
     "texto completo recuperado": "Hay historias que se escriben entre dos" in cinema,
     "anuncio de la boda": "¡Nos casamos!" in cinema,
+    "pausa de 5,6 s tras el anuncio": "await new Promise(resolve=>setTimeout(resolve,5600));" in cinema,
     "secuencia de entrada y anillo": cinema.index("v105Prelude") < cinema.index("body.classList.add('v14-cinema-active')"),
     "animación de zoom existente": "v14RingToStory" in cinema_css and "positionRing()" in cinema,
     "fotografía real del anillo": "rocio-ivan-hero.webp" in cinema,
