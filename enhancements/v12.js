@@ -210,8 +210,11 @@
           signal:controller.signal
         });
         const result=await response.json().catch(()=>null);
+        /* FormSubmit puede responder HTTP 200 con success:"false": en ese
+           caso el envío NO está aceptado y result.message explica la causa. */
         if(!response.ok||!result||(result.success!==true&&result.success!=='true')){
-          throw new Error('FormSubmit no ha aceptado la respuesta');
+          const reason=typeof result?.message==='string'?result.message:'';
+          throw new Error(reason||'FORM_SUBMIT_UNAVAILABLE');
         }
         $('#v12RsvpForm').style.display='none';
         $('#v12Result').classList.add('show');
@@ -222,7 +225,22 @@
           ;
         showStatus('');
       }catch(_error){
-        showStatus('No hemos podido enviar tu confirmación. Tus respuestas siguen aquí; comprueba tu conexión e inténtalo de nuevo. Si persiste, contacta con los novios.',true);
+        const reason=String(_error?.message||'');
+        /* Activación es el caso habitual durante la primera prueba. Nunca
+           mostrar "Gracias" ni borrar respuestas hasta que FormSubmit acepte. */
+        if(/activat|verif|confirm.{0,30}(form|email)/i.test(reason)){
+          showStatus('El correo que recibe las confirmaciones todavía necesita activación. Los novios deben abrir ivanrocio2027@gmail.com, buscar el mensaje de FormSubmit (también en Spam o Promociones) y pulsar «Activate Form». ESTA RESPUESTA NO SE HA ENVIADO: vuelve a pulsar el botón después de activarlo.',true);
+        }else if(/referer|web server|html files|web page/i.test(reason)){
+          showStatus('FormSubmit no ha reconocido el origen de la página. Abre la invitación desde el enlace oficial de GitHub Pages y vuelve a intentarlo.',true);
+        }else if(_error?.name==='AbortError'){
+          showStatus('Se ha agotado el tiempo de espera del servidor. No podemos confirmar si recibió la respuesta. Comprueba primero el correo de los novios antes de volver a enviar para evitar duplicados.',true);
+        }else if(!navigator.onLine){
+          showStatus('Parece que no tienes conexión a Internet. Tus datos se conservan aquí; vuelve a pulsar Enviar cuando recuperes la conexión.',true);
+        }else{
+          showStatus('El servicio de confirmaciones no ha aceptado el envío. Tus respuestas siguen aquí. Revisa si FormSubmit ha enviado un correo de activación a los novios; si ya está activo, prueba sin bloqueadores del navegador o avisa a los novios.',true);
+        }
+        /* Registrar solo el motivo técnico, nunca nombres ni datos personales. */
+        console.warn('FormSubmit: confirmación no completada:',reason);
       }finally{
         window.clearTimeout(timeout);
         submitting=false;
