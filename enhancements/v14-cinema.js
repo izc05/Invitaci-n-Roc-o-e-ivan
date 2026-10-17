@@ -1,4 +1,4 @@
-/* V14 · Entrada desde el anillo + fullscreen por gesto directo. */
+/* V14 · Apertura con fotografía sin zoom y fullscreen por gesto directo. */
 (()=>{
   'use strict';
   const enter=document.getElementById('enterBtn');
@@ -26,48 +26,21 @@
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let entered=false,started=false,completed=false;
   let completionTimer=null;
-  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
-  function positionRing(){
-    const w=overlay.clientWidth||window.innerWidth;
-    const h=overlay.clientHeight||window.innerHeight;
-    const iw=img.naturalWidth||1200;
-    const ih=img.naturalHeight||1800;
-    const fit=Math.min(w/iw,h/ih);
-    const dw=iw*fit,dh=ih*fit;
-    /* Punto medido sobre la fotografía real: anillo en primer plano. */
-    const fx=(w-dw)/2+dw*.625;
-    const fy=(h-dh)/2+dh*.53;
-    overlay.style.setProperty('--v14-focus-x',fx+'px');
-    overlay.style.setProperty('--v14-focus-y',fy+'px');
-    overlay.style.setProperty('--v14-shift-x',(w/2-fx)+'px');
-    overlay.style.setProperty('--v14-shift-y',(h/2-fy)+'px');
-  }
-  img.addEventListener('load',positionRing,{once:true});
-  window.addEventListener('resize',()=>{if(entered&&!completed) positionRing()},{passive:true});
-
   function finish(){
     if(completed) return;
     completed=true;
     clearTimeout(completionTimer);
     body.classList.add('v14-cinema-finished','v14-cinema-fading');
     window.setTimeout(()=>{
-      body.classList.remove('v14-cinema-active','v14-cinema-playing','v14-cinema-fading');
+      body.classList.remove('v14-cinema-active','v14-cinema-fading');
       overlay.remove();
     },950);
   }
   function start(){
     if(started) return;
     started=true;
-    positionRing();
-    if(reduced){
-      completionTimer=window.setTimeout(finish,650);
-      return;
-    }
-    requestAnimationFrame(()=>{
-      positionRing();
-      body.classList.add('v14-cinema-playing');
-      completionTimer=window.setTimeout(finish,7300);
-    });
+    /* Fotografía fija: sin movimientos de zoom, solo una transición suave. */
+    completionTimer=window.setTimeout(finish,reduced?350:1100);
   }
 
   /* El antiguo manejador escribía el título durante varios segundos antes
