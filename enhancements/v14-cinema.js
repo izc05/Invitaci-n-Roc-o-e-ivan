@@ -1,51 +1,17 @@
-/* V14 · Apertura con fotografía sin zoom y fullscreen por gesto directo. */
+/* V14 · Apertura estable: carta -> anuncio -> portada, sin foto duplicada ni zoom. */
 (()=>{
   'use strict';
   const enter=document.getElementById('enterBtn');
   const opening=document.getElementById('opening');
   const hero=document.querySelector('.hero');
   if(!enter||!opening||!hero) return;
-  const photoUrl='assets/images/rocio-ivan-hero.webp';
-  const overlay=document.createElement('div');
-  overlay.className='v14-cinema';
-  overlay.setAttribute('aria-hidden','true');
-  const img=document.createElement('img');
-  img.className='v14-cinema__photo';
-  img.src=photoUrl;
-  img.alt='';
-  img.draggable=false;
-  img.decoding='async';
-  img.fetchPriority='high';
-  overlay.append(img);
-  const veil=document.createElement('div');
-  veil.className='v14-cinema__veil';
-  overlay.append(veil);
-  document.body.append(overlay);
 
   const body=document.body;
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let entered=false,started=false,completed=false;
-  let completionTimer=null;
-  function finish(){
-    if(completed) return;
-    completed=true;
-    clearTimeout(completionTimer);
-    body.classList.add('v14-cinema-finished','v14-cinema-fading');
-    window.setTimeout(()=>{
-      body.classList.remove('v14-cinema-active','v14-cinema-fading');
-      overlay.remove();
-    },950);
-  }
-  function start(){
-    if(started) return;
-    started=true;
-    /* Fotografía fija: sin movimientos de zoom, solo una transición suave. */
-    completionTimer=window.setTimeout(finish,reduced?350:1100);
-  }
+  const sleep=ms=>new Promise(resolve=>window.setTimeout(resolve,ms));
+  let entered=false;
 
-  /* El antiguo manejador escribía el título durante varios segundos antes
-     de mostrar la foto. Se sustituye solo la apertura; el resto de la web
-     (música, historias, confirmación, navegación) se conserva intacto. */
+  /* Sustituir el manejador heredado sin tocar el resto de la invitación. */
   enter.onclick=null;
   enter.addEventListener('click',()=>{
     if(entered) return;
@@ -53,55 +19,55 @@
     enter.disabled=true;
     enter.textContent='Abriendo…';
     window.scrollTo(0,0);
+
+    const pre=document.getElementById('v105Prelude');
+    const p=document.getElementById('v105PreludeText');
+
+    /* Mostrar cobertura opaca ANTES de ocultar la carta: sin flash del hero. */
+    if(pre&&p){
+      body.classList.add('v105-prelude-lock');
+      p.textContent='';
+      pre.classList.remove('hide');
+      pre.classList.add('show');
+    }
     opening.classList.add('hide');
 
-    /* Activar la música dentro del gesto real y antes de pedir fullscreen:
-       algunos navegadores consumen la autorización al entrar en pantalla completa. */
+    /* Audio y pantalla completa dentro del gesto real del usuario. */
     const audio=document.getElementById('music');
     if(audio?.paused) document.getElementById('musicBtn')?.click();
-    /* Pedir fullscreen dentro del propio click mantiene la activación de usuario.
-       En navegadores que lo bloqueen, la escena usa un overlay 100dvh. */
-    let fs;
     try{
       const root=document.documentElement;
+      let fs;
       if(!document.fullscreenElement&&!document.webkitFullscreenElement){
         if(root.requestFullscreen) fs=root.requestFullscreen({navigationUI:'hide'});
         else if(root.webkitRequestFullscreen) fs=root.webkitRequestFullscreen();
       }
-    }catch(_e){}
+      if(fs&&typeof fs.catch==='function') fs.catch(()=>{});
+    }catch(_e){/* Algunos navegadores rechazan fullscreen; el anuncio sigue. */}
 
-    let settled=false;
-    const proceed=async()=>{
-      if(settled)return;
-      settled=true;
-      const pre=document.getElementById('v105Prelude');
-      const p=document.getElementById('v105PreludeText');
-      if(pre&&p){
-        body.classList.add('v105-prelude-lock');
-        pre.classList.remove('hide');
-        pre.classList.add('show');
-        p.textContent='';
-        await new Promise(resolve=>setTimeout(resolve,900));
-        const msg='Hay historias que se escriben entre dos, pero que no serían las mismas sin quienes las acompañan.';
-        if(reduced)p.textContent=msg;
-        else for(const c of msg){p.textContent+=c;await new Promise(resolve=>setTimeout(resolve,40));}
-        const end=document.createElement('strong');
-        end.textContent='¡Nos casamos!';
-        end.className='v14-marriage';
-        p.appendChild(end);
-        await new Promise(resolve=>setTimeout(resolve,5600));
-        pre.classList.add('hide');
-        await new Promise(resolve=>setTimeout(resolve,750));
-        body.classList.remove('v105-prelude-lock');
+    const showAnnouncement=async()=>{
+      if(!pre||!p) return;
+      await sleep(900);
+      const msg='Hay historias que se escriben entre dos, pero que no serían las mismas sin quienes las acompañan.';
+      if(reduced) p.textContent=msg;
+      else for(const c of msg){
+        p.textContent+=c;
+        await sleep(40);
       }
-      body.classList.add('v14-cinema-active');
-      start();
+      const end=document.createElement('strong');
+      end.textContent='¡Nos casamos!';
+      end.className='v14-marriage';
+      p.appendChild(end);
+
+      /* Cuatro segundos adicionales respecto a la pausa original. */
+      await sleep(5600);
+
+      /* Revelar directamente el hero definitivo, sin overlay de otra foto. */
+      pre.classList.add('hide');
+      await sleep(reduced?0:1150);
+      pre.classList.remove('show');
+      body.classList.remove('v105-prelude-lock');
     };
-    if(fs && typeof fs.then==='function') fs.then(proceed,proceed);
-    else requestAnimationFrame(proceed);
-    window.setTimeout(proceed,700);
+    void showAnnouncement();
   });
-  img.addEventListener('error',()=>{
-    if(entered) finish();
-  },{once:true});
 })();
