@@ -1,6 +1,6 @@
-"""Comprobaciones de regresión de la invitación.
-Evitan perder el texto inicial, la fotografía fija y el audio en despliegues.
-No sustituyen la prueba visual en un teléfono real.
+"""Comprobaciones estáticas de apertura y regresión de la invitación.
+La secuencia debe ser carta -> mensaje opaco -> foto fija.
+No sustituyen una prueba visual en navegador real.
 """
 from pathlib import Path
 
@@ -13,23 +13,21 @@ deploy = Path("site/index.html").read_text(encoding="utf-8")
 workflow = Path(".github/workflows/pages.yml").read_text(encoding="utf-8")
 
 checks = {
-    "frase introductoria original": "Tenemos algo que contaros" in v105,
-    "texto completo recuperado": "Hay historias que se escriben entre dos" in cinema,
+    "texto introductorio": "Tenemos algo que contaros" in v105 and "Hay historias que se escriben entre dos" in cinema,
     "anuncio de la boda": "¡Nos casamos!" in cinema,
-    "pausa de 5,6 s tras el anuncio": "await new Promise(resolve=>setTimeout(resolve,5600));" in cinema,
-    "anuncio antes de mostrar la foto": cinema.index("v105Prelude") < cinema.index("body.classList.add('v14-cinema-active')"),
-    "zoom V14 eliminado": "v14RingToStory" not in cinema_css and "scale(3.8)" not in cinema_css and "positionRing()" not in cinema and "v14-cinema-playing" not in cinema,
-    "foto V14 fija": ".v14-cinema__photo{" in cinema_css and "  transform:none;" in cinema_css,
-    "transición suave sin zoom": "completionTimer=window.setTimeout(finish,reduced?350:1100);" in cinema,
-    "foto principal fija sin zoom": "animation:none!important;" in hero_css and "v13RingSafeReveal" not in hero_css and "v13HeroZoomOut" not in hero_css,
-    "CSS actualizado sin caché antigua": "assets/v13.css?v=136" in workflow,
-    "nueva versión V14 anticaché": "assets/v14-cinema.css?v=144" in workflow and "assets/v14-cinema.js?v=146" in workflow,
-    "fotografía real del anillo": "rocio-ivan-hero.webp" in cinema,
-    "música no se pausa por cambio de visibilidad": "document.hidden&&!music.paused" not in index,
-    "audio antes de pedir fullscreen": cinema.index("if(audio?.paused)") < cinema.index("if(root.requestFullscreen)"),
-    "scripts en orden": deploy.index("assets/v10-5.js?") < deploy.index("assets/v14-cinema.js?"),
-    "mensaje disponible al público": "v14-cinema.js?" in deploy,
-    "sin reintroducir V15 problemática": "v15-polish" not in workflow,
+    "pausa de 5,6 segundos conservada": "await sleep(5600);" in cinema,
+    "mensaje mostrado antes de ocultar carta": cinema.index("pre.classList.add('show');") < cinema.index("opening.classList.add('hide');"),
+    "fondo opaco que evita flash": "z-index:1250" in cinema_css and "background:#f5efe6" in cinema_css and "transition:none;" in cinema_css,
+    "salida después de texto y pausa": cinema.index("p.appendChild(end);") < cinema.index("await sleep(5600);") < cinema.index("pre.classList.add('hide');"),
+    "solo se desvanece el mensaje al salir": ".v105-prelude.show.hide{" in cinema_css and "transition:opacity 1.1s ease" in cinema_css,
+    "sin segunda fotografía ni zoom V14": "document.createElement('img')" not in cinema and "v14-cinema-active" not in cinema and "v14RingToStory" not in cinema_css and "scale(3.8)" not in cinema_css,
+    "portada fija sin zoom": "animation:none!important;" in hero_css and "v13RingSafeReveal" not in hero_css and "v13HeroZoomOut" not in hero_css,
+    "imagen real de portada conservada": "rocio-ivan-hero.webp" in hero_css,
+    "audio antes de solicitar fullscreen": cinema.index("if(audio?.paused)") < cinema.index("if(root.requestFullscreen)"),
+    "sin pausa forzada al ocultar pestaña": "document.hidden&&!music.paused" not in index,
+    "archivos activos en orden correcto": deploy.index("assets/v10-5.js?") < deploy.index("assets/v14-cinema.js?"),
+    "nuevo JS y CSS sin caché": "assets/v14-cinema.css?v=145" in workflow and "assets/v14-cinema.js?v=147" in workflow,
+    "sin reintroducir rediseño V15": "v15-polish" not in workflow,
 }
 for label, passed in checks.items():
     print(("OK   " if passed else "FAIL ")+label)
