@@ -140,7 +140,7 @@
     $('#v12AddCompanion')?.addEventListener('click',addCompanion);
 
     /* La clave pública se obtiene gratis en web3forms.com y llega al correo de los novios. */
-    const web3formsAccessKey='PENDIENTE_CLAVE_WEB3FORMS';
+    const web3formsAccessKey='38bb42e4-2cb6-4ca5-b07b-d5b5e0119e21';
     const submit=$('#v12Submit');
     const status=$('#v12SendStatus');
     const food=$('#v12Food');
@@ -198,8 +198,8 @@
 
       /* El formulario no saldrá a producción hasta configurar la clave pública
          que Web3Forms envía al correo receptor. */
-      if(web3formsAccessKey==='PENDIENTE_CLAVE_WEB3FORMS'){
-        showStatus('El servicio de confirmaciones todavía no está activado. Avísanos para finalizar la configuración.',true);
+      if(!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(web3formsAccessKey)){
+        showStatus('El formulario aún no está configurado. Contacta con los novios.',true);
         return;
       }
       if($('#v12Honey')?.value){return;}
