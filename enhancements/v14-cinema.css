@@ -1,4 +1,4 @@
-/* V14 · Secuencia cinematográfica de entrada: viaje desde el anillo. */
+/* V14 · Apertura con foto inmóvil y fundido suave. */
 .v14-cinema{
   position:fixed;
   inset:0;
@@ -32,10 +32,9 @@
   height:100%;
   object-fit:contain;
   object-position:center;
-  transform-origin:var(--v14-focus-x,62.5%) var(--v14-focus-y,53%);
-  transform:translate(var(--v14-shift-x,-12%),var(--v14-shift-y,-3%)) scale(3.8);
+  transform:none;
   backface-visibility:hidden;
-  will-change:transform;
+  will-change:opacity;
   -webkit-user-select:none;
   user-select:none;
 }
@@ -47,13 +46,6 @@
 }
 body.v14-cinema-active{overflow:hidden!important}
 body.v14-cinema-active .v14-cinema{opacity:1;visibility:visible}
-body.v14-cinema-playing .v14-cinema__photo{
-  animation:v14RingToStory 7.2s cubic-bezier(.2,.76,.16,1) both;
-}
-@keyframes v14RingToStory{
-  0%{transform:translate(var(--v14-shift-x,-12%),var(--v14-shift-y,-3%)) scale(3.8)}
-  100%{transform:translate(0,0) scale(1)}
-}
 body.v14-cinema-fading .v14-cinema{opacity:0;visibility:hidden}
 body.v14-cinema-finished .hero-card{
   animation:v14CardEntrance 1.15s cubic-bezier(.2,.7,.2,1) both;
@@ -67,10 +59,9 @@ body.v14-cinema-finished .hero-card{
   body.v13 .hero-bg{height:100svh!important;height:100dvh!important}
 }
 @media(prefers-reduced-motion:reduce){
-  body.v14-cinema-playing .v14-cinema__photo{animation:none!important;transform:none!important}
   body.v14-cinema-finished .hero-card{animation:none!important}
   .v14-cinema{transition-duration:.25s}
 }
 
-/* Recuperación del anuncio nupcial; no afecta a fotografías ni zoom. */
+/* Recuperación del anuncio nupcial; imagen fija. */
 .v105-prelude .v14-marriage{display:block;margin:22px auto 0;font:400 clamp(34px,9vw,58px)/1.12 Georgia,serif;color:#405448;letter-spacing:-.035em;}
