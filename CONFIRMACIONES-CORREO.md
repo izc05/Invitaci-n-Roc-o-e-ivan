@@ -12,12 +12,12 @@ Se transmiten: nombre, asistencia sí/no, nombres de acompañantes si correspond
 
 1. Abrir la página publicada: https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/
 2. Completar una confirmación de prueba con «Prueba» en el nombre, seleccionar «No» para no añadir datos ajenos y pulsar «Enviar confirmación».
-3. Abrir el buzón **ivanrocio2027@gmail.com** y buscar el mensaje de activación de **FormSubmit** (también en Spam / Promociones). Seguir el enlace para confirmar la dirección. Nunca copiar ese enlace a GitHub ni compartirlo.
-4. Después de activar, volver a la invitación y enviar **una nueva prueba** marcada como «Prueba envío». Verificar que llega un correo con el nombre, asistencia y tipo de respuesta.
+3. Si la web muestra **«El correo que recibe las confirmaciones todavía necesita activación»**, es la respuesta de FormSubmit a la primera prueba: **no se ha enviado la confirmación** y el formulario está pendiente de activación. Abrir **ivanrocio2027@gmail.com** y buscar el correo de activación de **FormSubmit** (también Spam / Promociones). Seguir el enlace «Activate Form» para confirmar el destinatario. No compartir ese enlace ni subirlo a GitHub.
+4. Después de activar, volver a la invitación y enviar **una sola nueva prueba** marcada como «Prueba envío». Verificar que llega un correo con el nombre, asistencia y tipo de respuesta. Si aparece un error genérico, probar sin extensiones de privacidad/bloqueadores o revisar la consola del navegador sin compartir datos personales.
 5. Comprobar una prueba de asistencia «Sí», con acompañantes y autobús, **sin incluir alergias reales**.
 6. Si falla o los mensajes no llegan, **no enviar todavía la invitación por WhatsApp**. Revisar la conexión, el correo, Spam y la activación. No debemos dar por confirmado un correo sin comprobarlo en Gmail.
 
-Importante: la recepción HTTP satisfactoria confirma la aceptación de la solicitud por FormSubmit, pero no verifica por sí sola la entrega final en Gmail. No se han enviado correos de prueba automáticamente ni se ha realizado una prueba visual real en móviles.
+Importante: FormSubmit puede responder **HTTP 200** acompañado de `success: "false"` y un texto de activación u otro error; eso **no significa entrega correcta**. La web evalúa `success` como `true` o `"true"`, distingue activación, falta de conexión y espera agotada. Un HTTP satisfactorio con éxito explícito tampoco verifica por sí solo la entrega final en Gmail. No se han enviado correos de prueba automáticamente ni se ha realizado una prueba visual real en móviles.
 
 ## Servicio, cuotas y privacidad
 FormSubmit declara uso gratuito y formularios/envíos ilimitados sujetos a medidas técnicas antispam. Para mantener un único clic se desactiva el CAPTCHA visible con `_captcha:false` y se añade un honeypot; esto puede incrementar spam o causar limitaciones de envío por parte del servicio. Si el tráfico lo requiere, reconsiderar CAPTCHA.
