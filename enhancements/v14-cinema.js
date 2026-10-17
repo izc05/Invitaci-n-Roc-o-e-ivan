@@ -116,7 +116,7 @@
         end.textContent='¡Nos casamos!';
         end.className='v14-marriage';
         p.appendChild(end);
-        await new Promise(resolve=>setTimeout(resolve,1600));
+        await new Promise(resolve=>setTimeout(resolve,5600));
         pre.classList.add('hide');
         await new Promise(resolve=>setTimeout(resolve,750));
         body.classList.remove('v105-prelude-lock');
