@@ -219,7 +219,7 @@
         $('#v12ThanksCopy').textContent=(attending?
           'Hemos enviado tu confirmación. ¡Nos hace mucha ilusión compartir este día contigo!':
           'Hemos enviado tu respuesta. Gracias por avisarnos, te tendremos muy presente.')
-          +' Si es la primera respuesta a este correo, los novios deben activar FormSubmit desde Gmail para recibir las confirmaciones.';
+          ;
         showStatus('');
       }catch(_error){
         showStatus('No hemos podido enviar tu confirmación. Tus respuestas siguen aquí; comprueba tu conexión e inténtalo de nuevo. Si persiste, contacta con los novios.',true);
