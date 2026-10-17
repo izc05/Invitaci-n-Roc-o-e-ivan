@@ -195,57 +195,36 @@
         'Tipo de respuesta':correction?'CORRECCIÓN de respuesta anterior':'Primera respuesta'
       };
 
+      /* POST HTML nativo: sin AJAX, CORS, preflight ni temporizador.
+         El servicio informa si falta activación; al aceptar redirige a
+         nuestra página de agradecimiento por medio de _next. */
       submitting=true;
       submit.disabled=true;
-      const normalLabel='Enviar confirmación ♡';
       submit.textContent='Enviando…';
-      showStatus('Enviando la confirmación…');
-      const controller=new AbortController();
-      const timeout=window.setTimeout(()=>controller.abort(),20000);
+      showStatus('Abriendo el servicio de confirmaciones…');
       try{
-        const response=await fetch('https://formsubmit.co/ajax/ivanrocio2027@gmail.com',{
-          method:'POST',
-          headers:{'Content-Type':'application/json','Accept':'application/json'},
-          body:JSON.stringify(payload),
-          signal:controller.signal
-        });
-        const result=await response.json().catch(()=>null);
-        /* FormSubmit puede responder HTTP 200 con success:"false": en ese
-           caso el envío NO está aceptado y result.message explica la causa. */
-        if(!response.ok||!result||(result.success!==true&&result.success!=='true')){
-          const reason=typeof result?.message==='string'?result.message:'';
-          throw new Error(reason||'FORM_SUBMIT_UNAVAILABLE');
+        payload._next='https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/gracias.html';
+        payload._url='https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/';
+        const postForm=document.createElement('form');
+        postForm.action='https://formsubmit.co/ivanrocio2027@gmail.com';
+        postForm.method='POST';
+        postForm.style.display='none';
+        for(const [key,value] of Object.entries(payload)){
+          const hidden=document.createElement('input');
+          hidden.type='hidden';
+          hidden.name=key;
+          hidden.value=String(value);
+          postForm.appendChild(hidden);
         }
-        $('#v12RsvpForm').style.display='none';
-        $('#v12Result').classList.add('show');
-        $('#v12Thanks').textContent=`Gracias, ${name} ♡`;
-        $('#v12ThanksCopy').textContent=(attending?
-          'Hemos enviado tu confirmación. ¡Nos hace mucha ilusión compartir este día contigo!':
-          'Hemos enviado tu respuesta. Gracias por avisarnos, te tendremos muy presente.')
-          ;
-        showStatus('');
+        document.body.appendChild(postForm);
+        postForm.submit();
+        /* Desde aquí gestiona el navegador el POST y su respuesta.
+           Nunca se muestra "Gracias" antes de la redirección del servidor. */
       }catch(_error){
-        const reason=String(_error?.message||'');
-        /* Activación es el caso habitual durante la primera prueba. Nunca
-           mostrar "Gracias" ni borrar respuestas hasta que FormSubmit acepte. */
-        if(/activat|verif|confirm.{0,30}(form|email)/i.test(reason)){
-          showStatus('El correo que recibe las confirmaciones todavía necesita activación. Los novios deben abrir ivanrocio2027@gmail.com, buscar el mensaje de FormSubmit (también en Spam o Promociones) y pulsar «Activate Form». ESTA RESPUESTA NO SE HA ENVIADO: vuelve a pulsar el botón después de activarlo.',true);
-        }else if(/referer|web server|html files|web page/i.test(reason)){
-          showStatus('FormSubmit no ha reconocido el origen de la página. Abre la invitación desde el enlace oficial de GitHub Pages y vuelve a intentarlo.',true);
-        }else if(_error?.name==='AbortError'){
-          showStatus('Se ha agotado el tiempo de espera del servidor. No podemos confirmar si recibió la respuesta. Comprueba primero el correo de los novios antes de volver a enviar para evitar duplicados.',true);
-        }else if(!navigator.onLine){
-          showStatus('Parece que no tienes conexión a Internet. Tus datos se conservan aquí; vuelve a pulsar Enviar cuando recuperes la conexión.',true);
-        }else{
-          showStatus('El servicio de confirmaciones no ha aceptado el envío. Tus respuestas siguen aquí. Revisa si FormSubmit ha enviado un correo de activación a los novios; si ya está activo, prueba sin bloqueadores del navegador o avisa a los novios.',true);
-        }
-        /* Registrar solo el motivo técnico, nunca nombres ni datos personales. */
-        console.warn('FormSubmit: confirmación no completada:',reason);
-      }finally{
-        window.clearTimeout(timeout);
         submitting=false;
         submit.disabled=false;
-        submit.textContent=normalLabel;
+        submit.textContent='Enviar confirmación ♡';
+        showStatus('No se ha podido abrir el envío. Comprueba la conexión y vuelve a intentarlo.',true);
       }
     });
     $('#v12Back')?.addEventListener('click',()=>{

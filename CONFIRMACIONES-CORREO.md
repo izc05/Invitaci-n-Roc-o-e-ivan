@@ -1,36 +1,37 @@
 # Confirmaciones por correo — Iván y Rocío
 
-## Qué hace la invitación
-El cuestionario de confirmación publicado en GitHub Pages envía una petición HTTPS con JavaScript al servicio gratuito [FormSubmit](https://formsubmit.co/) para entregar un correo a **ivanrocio2027@gmail.com**. No se necesita una cuenta de invitado, no se abre una aplicación de correo y no hay panel ni base de datos propia.
+## Envío con un solo botón y sin AJAX
 
-Solo después de una respuesta satisfactoria del servicio, la web muestra «Gracias». En caso de error o falta de conexión, mantiene los datos introducidos, muestra el problema y permite reintentar. El botón se deshabilita durante cada petición. El enlace «Enviar una corrección» produce **otro correo** marcado como corrección; no actualiza ni borra el anterior.
+La invitación sigue publicada en GitHub Pages. El cuestionario envía las respuestas a **ivanrocio2027@gmail.com** mediante **POST HTML nativo** a **https://formsubmit.co/ivanrocio2027@gmail.com** (sin abrir Gmail ni depender de CORS/AJAX/JavaScript para contactar con el servicio). Tras aceptar el formulario, FormSubmit puede redirigir al invitado a nuestra página **/gracias.html** mediante el campo documentado `_next`.
 
-Se transmiten: nombre, asistencia sí/no, nombres de acompañantes si corresponde, necesidad de autobús, observaciones alimentarias opcionales y si es una corrección. El apartado de información alimentaria muestra una casilla de autorización explícita si se cumplimenta. No pedir otros datos sanitarios, teléfonos ni direcciones postales.
+La antigua versión utilizaba `fetch('https://formsubmit.co/ajax/...')` con un temporizador de 20 segundos. En pruebas manuales del usuario esa petición quedaba esperando y acababa en error. El POST HTML nativo permite que **FormSubmit muestre directamente un error o el aviso de activación** en el navegador, sin ocultarlo detrás de un error genérico. **Es distinto del envío AJAX: al pulsar Enviar, el navegador sale momentáneamente de la invitación y, si FormSubmit acepta la respuesta, vuelve a una página de agradecimiento propia.**
 
-## Paso imprescindible antes de enviarla por WhatsApp
-**La integración no estará operativa hasta activar el destinatario en FormSubmit:**
+No inventamos confirmación de entrega desde JavaScript: la redirección a /gracias.html está configurada como respuesta del servidor, y la llegada al buzón se comprueba aparte. Si falla el servicio, la pantalla mostrará el error del servicio, no una confirmación falsa. **FormSubmit sigue siendo un proveedor externo: cambiar a POST nativo no garantiza que no tenga caídas ni problemas antispam.**
 
-1. Abrir la página publicada: https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/
-2. Completar una confirmación de prueba con «Prueba» en el nombre, seleccionar «No» para no añadir datos ajenos y pulsar «Enviar confirmación».
-3. Si la web muestra **«El correo que recibe las confirmaciones todavía necesita activación»**, es la respuesta de FormSubmit a la primera prueba: **no se ha enviado la confirmación** y el formulario está pendiente de activación. Abrir **ivanrocio2027@gmail.com** y buscar el correo de activación de **FormSubmit** (también Spam / Promociones). Seguir el enlace «Activate Form» para confirmar el destinatario. No compartir ese enlace ni subirlo a GitHub.
-4. Después de activar, volver a la invitación y enviar **una sola nueva prueba** marcada como «Prueba envío». Verificar que llega un correo con el nombre, asistencia y tipo de respuesta. Si aparece un error genérico, probar sin extensiones de privacidad/bloqueadores o revisar la consola del navegador sin compartir datos personales.
-5. Comprobar una prueba de asistencia «Sí», con acompañantes y autobús, **sin incluir alergias reales**.
-6. Si falla o los mensajes no llegan, **no enviar todavía la invitación por WhatsApp**. Revisar la conexión, el correo, Spam y la activación. No debemos dar por confirmado un correo sin comprobarlo en Gmail.
+## Activación imprescindible antes de compartir por WhatsApp
 
-Importante: FormSubmit puede responder **HTTP 200** acompañado de `success: "false"` y un texto de activación u otro error; eso **no significa entrega correcta**. La web evalúa `success` como `true` o `"true"`, distingue activación, falta de conexión y espera agotada. Un HTTP satisfactorio con éxito explícito tampoco verifica por sí solo la entrega final en Gmail. No se han enviado correos de prueba automáticamente ni se ha realizado una prueba visual real en móviles.
+1. Abrir **https://izc05.github.io/Invitaci-n-Roc-o-e-ivan/** en navegador normal.
+2. Rellenar una confirmación de prueba sin datos sanitarios (por ejemplo, nombre «PRUEBA ACTIVACIÓN», asistencia «No»), y pulsar **Enviar confirmación** **solo una vez**.
+3. El navegador irá al servicio FormSubmit: si aparece «This form needs Activation», abrir el buzón **ivanrocio2027@gmail.com** y localizar el correo de activación (comprobar también Spam y Promociones). Hacer clic en «Activate Form». No compartir el enlace ni subirlo a GitHub.
+4. Una vez activado, hacer **una segunda prueba con otro nombre** y comprobar que se muestra /gracias.html y que el correo con las respuestas llega a Gmail.
+5. Repetir una prueba «Sí» incluyendo un acompañante y autobús, **sin añadir información sanitaria real**.
+6. Solo después de comprobar el correo real, distribuir el enlace por WhatsApp.
 
-## Servicio, cuotas y privacidad
-FormSubmit declara uso gratuito y formularios/envíos ilimitados sujetos a medidas técnicas antispam. Para mantener un único clic se desactiva el CAPTCHA visible con `_captcha:false` y se añade un honeypot; esto puede incrementar spam o causar limitaciones de envío por parte del servicio. Si el tráfico lo requiere, reconsiderar CAPTCHA.
+**Si la navegación se queda bloqueada o falla**, consultar si FormSubmit está operativo, probar el enlace en Chrome/Edge sin bloqueadores y revisar Spam. Si persiste, usar un proveedor alternativo (por ejemplo, Google Forms o Google Apps Script). No bombardear con reintentos: pueden generar respuestas duplicadas.
 
-Los datos se procesan en un tercero y se envían al buzón de los novios; no se guardan en el repositorio ni hay base de datos propia. Según FormSubmit, el archivo de envíos se conserva 30 días (además de la copia que llegue al buzón). Evitar publicar respuestas y borrar correos personales cuando dejen de necesitarse para organizar la boda. La dirección receptora aparece en el JS público; después de la activación puede sustituirse en la URL por el alias aleatorio que facilita FormSubmit para reducir el spam.
+## Contenido, privacidad y correcciones
 
-Documentación:
-- https://formsubmit.co/documentation
-- https://formsubmit.co/ajax-documentation
-- https://formsubmit.co/help
+Se envían los datos del formulario: nombre, asistencia, acompañantes, autobús, observaciones alimentarias opcionales y aviso de corrección. El apartado alimentario exige autorización expresa antes del envío. Los datos se transmiten al servicio de terceros FormSubmit y al correo de los novios, no a GitHub. FormSubmit indica que conserva un archivo de los envíos por 30 días. Los novios deben limitar el uso y borrar las respuestas cuando ya no sean necesarias.
+
+Una corrección produce **otro correo** que debe revisar la pareja; no reemplaza automáticamente al anterior. FormSubmit recomienda protección antispam; el formulario usa honeypot y se ha desactivado CAPTCHA para un solo botón, con las restricciones antispam que pueda aplicar el proveedor.
+
+## Referencias
+- https://formsubmit.co/documentation — formulario POST, `_next`, `_url`, `_subject`, `_honey` y `_captcha`.
+- https://formsubmit.co/help — activación y recepción.
 
 ## Archivos
-- `enhancements/v12.js`: cuestionario, validación y envío real.
-- `enhancements/v12.css`: mensajes de estado y aviso de privacidad.
-- `.github/workflows/pages.yml`: versiones de caché en despliegue.
-- `tests/test_invitation_smoke.py`: comprobaciones estáticas de regresión.
+- `enhancements/v12.js`: cuestionario, validación y POST HTML.
+- `enhancements/v12.css`: aviso de privacidad y mensajes.
+- `gracias.html`: agradecimiento después de la redirección del servidor.
+- `.github/workflows/pages.yml`: despliegue de página e invalidación de caché.
+- `tests/test_invitation_smoke.py`: comprobaciones de regresión.
