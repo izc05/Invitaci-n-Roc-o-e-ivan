@@ -41,7 +41,8 @@ checks = {
     "antispam básico": "if($('#v12Honey')?.value){return;}" in rsvp,
     "sin falso mensaje de éxito": "v12Result').classList.add('show')" not in rsvp and "postForm.submit();" in rsvp,
     "publica página de gracias": "cp gracias.html site/gracias.html" in workflow,
-    "caché renovada": "assets/v12.js?v=124" in workflow,
+    "caché renovada": "assets/v12.js?v=125" in workflow,
+    "clave pública del correo de boda": "const web3formsAccessKey='277abd5a-60b9-4da8-a96f-26fd5b2bb459';" in rsvp,
 }
 for label, passed in checks.items():
     print(("OK   " if passed else "FAIL ")+label)
