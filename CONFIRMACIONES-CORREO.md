@@ -10,7 +10,7 @@ El cuestionario mantiene las opciones de asistencia, acompañantes, autobús y o
 
 Se utiliza el campo `redirect` con el enlace absoluto a `/gracias.html` para que Web3Forms redirija tras aceptar el formulario. No hay falso éxito anticipado en JavaScript, ni dependencia del AJAX que se bloqueaba con FormSubmit. El servicio sigue siendo externo y puede fallar por disponibilidad o filtros antispam.
 
-**Clave configurada en la PR**, sin incluir su valor en este documento.
+**Clave pública actualizada el 18/10/2026** desde la cuenta de `ivanrocio2027@gmail.com`. La clave anterior había enviado varias pruebas al correo personal; las respuestas de ese periodo **no se trasladan automáticamente** al nuevo buzón. La entrega a la cuenta de la boda sigue pendiente de comprobación mediante una nueva prueba real. La clave no se reproduce en este documento.
 
 ## Verificación obligatoria antes de compartir por WhatsApp
 
