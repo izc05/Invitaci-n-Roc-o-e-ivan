@@ -140,7 +140,7 @@
     $('#v12AddCompanion')?.addEventListener('click',addCompanion);
 
     /* La clave pública se obtiene gratis en web3forms.com y llega al correo de los novios. */
-    const web3formsAccessKey='38bb42e4-2cb6-4ca5-b07b-d5b5e0119e21';
+    const web3formsAccessKey='277abd5a-60b9-4da8-a96f-26fd5b2bb459';
     const submit=$('#v12Submit');
     const status=$('#v12SendStatus');
     const food=$('#v12Food');
