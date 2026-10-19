@@ -87,9 +87,9 @@
     if(list){
       list.innerHTML=`<div class="timeline-line" id="timelineLine"></div>
         <div class="stop reveal in"><time>13:30</time><h4>Ceremonia</h4><p>El comienzo de nuestra historia juntos.</p></div>
-        <div class="stop reveal in"><time>Cóctel</time><h4>Cóctel</h4><p>Un brindis para celebrar este día con vosotros.</p></div>
-        <div class="stop reveal in"><time>Banquete</time><h4>Banquete</h4><p>Compartiremos mesa, risas y buenos momentos.</p></div>
-        <div class="stop reveal in"><time>Fiesta</time><h4>Fiesta</h4><p>Porque un día así, merece terminar bailando.</p></div>`;
+        <div class="stop reveal in"><h4>Cóctel</h4><p>Un brindis para celebrar este día con vosotros.</p></div>
+        <div class="stop reveal in"><h4>Banquete</h4><p>Compartiremos mesa, risas y buenos momentos.</p></div>
+        <div class="stop reveal in"><h4>Fiesta</h4><p>Porque un día así, merece terminar bailando.</p></div>`;
     }
   }
 
