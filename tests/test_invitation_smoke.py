@@ -41,8 +41,11 @@ checks = {
     "antispam básico": "if($('#v12Honey')?.value){return;}" in rsvp,
     "sin falso mensaje de éxito": "v12Result').classList.add('show')" not in rsvp and "postForm.submit();" in rsvp,
     "publica página de gracias": "cp gracias.html site/gracias.html" in workflow,
-    "caché renovada": "assets/v12.js?v=126" in workflow,
-    "itinerario sin nombres duplicados": all(f"<time>{item}</time>" not in rsvp and f"<h4>{item}</h4>" in rsvp for item in ("Cóctel", "Banquete", "Fiesta")),
+    "caché renovada": "assets/v12.js?v=127" in workflow,
+    "horario completo sin duplicados": all(rsvp.count(f'<time>{hora}</time><h4>{acto}</h4>') == 1 for hora, acto in (("13:00", "Recepción de invitados"), ("13:30", "Ceremonia"), ("14:30", "Cóctel"), ("15:30", "Banquete"), ("18:30", "Fiesta"))),
+    "horario en orden cronológico": all(rsvp.index(f'<time>{a}</time>') < rsvp.index(f'<time>{b}</time>') for a, b in (("13:00", "13:30"), ("13:30", "14:30"), ("14:30", "15:30"), ("15:30", "18:30"))),
+    "mensaje recepción exacto": '<p>Nos encontramos para dar comienzo a un día muy especial.</p>' in rsvp,
+    "calendario desde la recepción": "'DTSTART:20270227T120000Z'" in rsvp,
     "hora confirmada de ceremonia": "<time>13:30</time><h4>Ceremonia</h4>" in rsvp,
     "clave pública del correo de boda": "const web3formsAccessKey='277abd5a-60b9-4da8-a96f-26fd5b2bb459';" in rsvp,
 }

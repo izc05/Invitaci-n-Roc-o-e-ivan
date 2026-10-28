@@ -72,7 +72,7 @@
     if(oldCal){
       const cal=oldCal.cloneNode(true); oldCal.replaceWith(cal);
       cal.addEventListener('click',()=>{
-        const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//RocioIvan//Boda//ES','BEGIN:VEVENT','UID:rocio-ivan-20270227@invitacion','DTSTAMP:20261007T153000Z','DTSTART:20270227T123000Z','DTEND:20270227T225900Z','SUMMARY:Boda de Iván y Rocío','LOCATION:Finca Los Olivos - Paraje Campillo Alto 13, 28722 El Vellón, Madrid','DESCRIPTION:Ceremonia y celebración en Finca Los Olivos. Ceremonia: 13:30 h.','END:VEVENT','END:VCALENDAR'].join('\r\n');
+        const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//RocioIvan//Boda//ES','BEGIN:VEVENT','UID:rocio-ivan-20270227@invitacion','DTSTAMP:20261007T153000Z','DTSTART:20270227T120000Z','DTEND:20270227T225900Z','SUMMARY:Boda de Iván y Rocío','LOCATION:Finca Los Olivos - Paraje Campillo Alto 13, 28722 El Vellón, Madrid','DESCRIPTION:Recepción: 13:00 h. Ceremonia: 13:30 h. Celebración en Finca Los Olivos.','END:VEVENT','END:VCALENDAR'].join('\r\n');
         const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
         a.href=url;a.download='boda-ivan-rocio-27-02-2027.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
       });
@@ -86,10 +86,11 @@
     const list=timeline.querySelector('.timeline-list');
     if(list){
       list.innerHTML=`<div class="timeline-line" id="timelineLine"></div>
+        <div class="stop reveal in"><time>13:00</time><h4>Recepción de invitados</h4><p>Nos encontramos para dar comienzo a un día muy especial.</p></div>
         <div class="stop reveal in"><time>13:30</time><h4>Ceremonia</h4><p>El comienzo de nuestra historia juntos.</p></div>
-        <div class="stop reveal in"><h4>Cóctel</h4><p>Un brindis para celebrar este día con vosotros.</p></div>
-        <div class="stop reveal in"><h4>Banquete</h4><p>Compartiremos mesa, risas y buenos momentos.</p></div>
-        <div class="stop reveal in"><h4>Fiesta</h4><p>Porque un día así, merece terminar bailando.</p></div>`;
+        <div class="stop reveal in"><time>14:30</time><h4>Cóctel</h4><p>Un brindis para celebrar este día con vosotros.</p></div>
+        <div class="stop reveal in"><time>15:30</time><h4>Banquete</h4><p>Compartiremos mesa, risas y buenos momentos.</p></div>
+        <div class="stop reveal in"><time>18:30</time><h4>Fiesta</h4><p>Porque un día así, merece terminar bailando.</p></div>`;
     }
   }
 
