@@ -38,11 +38,11 @@
           <div class="v12-time"><strong id="v12Minutes">00</strong><span>Minutos</span></div>
           <div class="v12-time"><strong id="v12Seconds">00</strong><span>Segundos</span></div>
         </div>
-        <div class="v12-date-line">Sábado · 27 de febrero de 2027 · 13:30 h</div>
+        <div class="v12-date-line">Sábado · 27 de febrero de 2027 · 13:00 h</div>
       </div>
     </section>`;
   }
-  const target=new Date('2027-02-27T13:30:00+01:00');
+  const target=new Date('2027-02-27T13:00:00+01:00');
   const updateCountdown=()=>{
     const diff=Math.max(0,target-Date.now());
     const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
