@@ -7,7 +7,7 @@
   $('.emotion')?.remove();
 
   const heroNote=$('.v106-fine-note');
-  if(heroNote) heroNote.textContent='13:30 h · Finca Los Olivos · El Vellón, Madrid';
+  if(heroNote) heroNote.textContent='13:00 h · Finca Los Olivos · El Vellón, Madrid';
 
   const nav=$('.nav');
   if(nav){
