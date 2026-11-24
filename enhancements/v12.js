@@ -61,7 +61,7 @@
     const kicker=panel?.querySelector('.v11-kicker');
     const title=panel?.querySelector('h2');
     const copy=panel?.querySelector('p');
-    if(kicker) kicker.textContent='Todo sucederá aquí';
+    if(kicker) kicker.remove();
     if(title) title.textContent='Todo sucederá aquí';
     if(copy) copy.textContent='Para que solo tengamos que preocuparnos de disfrutar.';
     if(panel && !panel.querySelector('.v12-place-name')){
